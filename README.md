@@ -7,7 +7,7 @@ git clone https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6.git
 cd spring-boot-3-web-hibernate-6
 ```
 
-Start All Services:
+Start Service:
 
 ```bash
 mvn spring-boot:run
