@@ -2,7 +2,6 @@ package com.example.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate6.Hibernate6Module;
-import lombok.AllArgsConstructor;
 import org.springframework.boot.validation.MessageInterpolatorFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -18,11 +17,15 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
-@AllArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    ObjectMapper objectMapper;
-    ApplicationContext applicationContext;
+    private final ObjectMapper objectMapper;
+    private final ApplicationContext applicationContext;
+
+    public WebMvcConfig(ObjectMapper objectMapper, ApplicationContext applicationContext) {
+        this.objectMapper = objectMapper;
+        this.applicationContext = applicationContext;
+    }
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {

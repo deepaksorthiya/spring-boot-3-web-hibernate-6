@@ -11,11 +11,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<AppUser, Long> {
 
-    String USER_ROLE_PERMISSION = "SELECT u FROM AppUser u LEFT JOIN FETCH u.roles r LEFT JOIN FETCH r.permissions p";
-    String COUNT_USER_ROLE_PERMISSION = "SELECT COUNT(*) FROM AppUser u LEFT JOIN u.roles r LEFT JOIN r.permissions p";
+    String USER_AND_ROLE = "SELECT u FROM AppUser u LEFT JOIN FETCH u.roles r";
+    String COUNT_USER_AND_ROLE = "SELECT COUNT(*) FROM AppUser u LEFT JOIN u.roles r";
+
+    String USER_AND_ROLE_AND_PERMISSION = "SELECT u FROM AppUser u LEFT JOIN FETCH u.roles r LEFT JOIN FETCH r.permissions p";
+    String COUNT_USER_AND_ROLE_AND_PERMISSION = "SELECT COUNT(*) FROM AppUser u LEFT JOIN u.roles r LEFT JOIN r.permissions p";
     String INNER_COUNT_USER_ROLE_PERMISSION = "SELECT COUNT(*) FROM AppUser u INNER JOIN u.roles r INNER JOIN r.permissions p WHERE u.userId IN(1,2)";
 
-    @Query(value = USER_ROLE_PERMISSION, countQuery = COUNT_USER_ROLE_PERMISSION)
+    @Query(value = USER_AND_ROLE, countQuery = COUNT_USER_AND_ROLE)
+    Page<AppUser> getAllUserWithRoles(Pageable pageable);
+
+    @Query(value = USER_AND_ROLE_AND_PERMISSION, countQuery = COUNT_USER_AND_ROLE_AND_PERMISSION)
     Page<AppUser> getAllUserWithRolesAndPermissions(Pageable pageable);
 
     @Query(value = INNER_COUNT_USER_ROLE_PERMISSION)
