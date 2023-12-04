@@ -30,6 +30,6 @@ public class AppUser {
 	private String lastName;
 
 	@ManyToMany(cascade = CascadeType.ALL, targetEntity = Role.class)
-	@JoinTable(name = "USER_ROLE_MAPPING")
+	@JoinTable(name = "APP_USER_ROLE_MAPPING")
 	private Set<Role> roles;
 }

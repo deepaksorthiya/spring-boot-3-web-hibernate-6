@@ -57,4 +57,10 @@ public class UserController {
     public ResponseEntity<Page<AppUser>> getAllUserWithRolesAndPermissions(@NotNull final Pageable pageable) {
         return new ResponseEntity<>(userRepository.getAllUserWithRolesAndPermissions(pageable), HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteAppUser(@PathVariable long userId) {
+        userRepository.deleteById(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
