@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -22,6 +23,9 @@ public class AppUser {
 	@Email(message = "{appuser.email.not.valid}")
 	@NotBlank(message = "{appuser.email.not.empty}")
 	private String email;
+
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String password;
 
 	@NotBlank(message = "{appuser.fname.not.empty}")
 	private String firstName;

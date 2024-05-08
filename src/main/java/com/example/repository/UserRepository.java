@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<AppUser, Long> {
 
@@ -32,4 +34,8 @@ public interface UserRepository extends JpaRepository<AppUser, Long> {
 
     @EntityGraph(attributePaths = {"roles"})
     Page<AppUser> findAllBy(Pageable pageable);
+
+    @Override
+    @EntityGraph(attributePaths = {"roles", "roles.permissions"})
+    Optional<AppUser> findById(Long userId);
 }

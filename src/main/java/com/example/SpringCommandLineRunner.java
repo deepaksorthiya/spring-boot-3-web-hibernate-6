@@ -42,17 +42,18 @@ public class SpringCommandLineRunner implements CommandLineRunner {
 
     public SpringCommandLineRunner(UserRepository userRepository, RoleRepository roleRepository,
                                    PermissionRepository permissionRepository,
-                                   RequestMappingInfoHandlerMapping requestMappingInfoHandlerMapping, ObjectMapper objectMapper, ApplicationContext applicationContext) {
+                                   RequestMappingInfoHandlerMapping requestMappingHandlerMapping, ObjectMapper objectMapper, ApplicationContext applicationContext) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
-        this.requestMappingInfoHandlerMapping = requestMappingInfoHandlerMapping;
+        this.requestMappingInfoHandlerMapping = requestMappingHandlerMapping;
         this.objectMapper = objectMapper;
         this.applicationContext = applicationContext;
     }
 
     @Override
     public void run(String... args) {
+        saveTestUserData();
 
         log.info("Entity Manager : {} ", entityManager);
         log.info("Permission Repo : {} ", permissionRepository);
@@ -66,14 +67,18 @@ public class SpringCommandLineRunner implements CommandLineRunner {
         }
 
         Set<Object> moduleIds = objectMapper.getRegisteredModuleIds();
+        log.info("Modules SIZE : {} ", moduleIds.size());
         log.info("Modules : {} ", moduleIds);
 
-        String[] names1 = applicationContext.getBeanNamesForType(Validator.class);
+          String[] names1 = applicationContext.getBeanNamesForType(Validator.class);
         String[] names2 = applicationContext.getBeanNamesForType(org.springframework.validation.Validator.class);
-
+        log.info("#######################################################");
         log.info("Jakarta Validator Beans : {} ", Arrays.toString(names1));
         log.info("Spring Validator Beans : {} ", Arrays.toString(names2));
+        log.info("#######################################################");
+    }
 
+    private void saveTestUserData() {
         Permission permission = new Permission(1, "permission", "permission desc", null);
         Set<Permission> permissions = new HashSet<>();
         permissions.add(permission);
@@ -88,7 +93,7 @@ public class SpringCommandLineRunner implements CommandLineRunner {
 
         for (int i = 0; i < 26; i++) {
             char c = (char) (i + 97);
-            AppUser appUser = new AppUser(0, c + "@gmail.com", c + "", c + "", null);
+            AppUser appUser = new AppUser(0, c + "@gmail.com", "password", c + "", c + "", null);
             appUserList.add(appUser);
         }
         List<AppUser> saveAppUserList = userRepository.saveAll(appUserList);
