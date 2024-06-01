@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<AppUser, Long> {
+public interface UserRepository extends JpaRepository<AppUser, Long>, CustomUserRepo {
 
     String USER_AND_ROLE = "SELECT u FROM AppUser u LEFT JOIN FETCH u.roles r";
     String COUNT_USER_AND_ROLE = "SELECT COUNT(*) FROM AppUser u LEFT JOIN u.roles r";
