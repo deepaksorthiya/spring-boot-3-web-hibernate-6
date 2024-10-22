@@ -12,13 +12,13 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+//@ToString
 @Entity
 public class AppUser {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long userId;
+	private Long userId;
 
 	@Email(message = "{appuser.email.not.valid}")
 	@NotBlank(message = "{appuser.email.not.empty}")

@@ -10,13 +10,13 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+//@ToString
 @Entity
 public class Permission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long permissionId;
+    private Long permissionId;
 
     private String permissionName;
 

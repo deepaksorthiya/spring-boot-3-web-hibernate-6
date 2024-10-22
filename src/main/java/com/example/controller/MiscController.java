@@ -20,9 +20,15 @@ public class MiscController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping(value = "/misc", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AppUser>> getAllUsersByEmail(@RequestParam String email) {
-        List<AppUser> users = userRepository.getAllUsersByEmail(email);
+    @GetMapping(value = "/getAllUsersByEmailUsingEntityManager", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<AppUser>> getAllUsersByEmailUsingEntityManager(@RequestParam String email) {
+        List<AppUser> users = userRepository.getAllUsersByEmailUsingEntityManager(email);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAllUsersByEmailUsingSessionFactory", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<AppUser>> getAllUsersByEmailUsingSessionFactory(@RequestParam String email) {
+        List<AppUser> users = userRepository.getAllUsersByEmailUsingSessionFactory(email);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

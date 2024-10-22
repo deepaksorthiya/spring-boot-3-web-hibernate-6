@@ -70,7 +70,7 @@ public class SpringCommandLineRunner implements CommandLineRunner {
         log.info("Modules SIZE : {} ", moduleIds.size());
         log.info("Modules : {} ", moduleIds);
 
-          String[] names1 = applicationContext.getBeanNamesForType(Validator.class);
+        String[] names1 = applicationContext.getBeanNamesForType(Validator.class);
         String[] names2 = applicationContext.getBeanNamesForType(org.springframework.validation.Validator.class);
         log.info("#######################################################");
         log.info("Jakarta Validator Beans : {} ", Arrays.toString(names1));
@@ -79,21 +79,21 @@ public class SpringCommandLineRunner implements CommandLineRunner {
     }
 
     private void saveTestUserData() {
-        Permission permission = new Permission(1, "permission", "permission desc", null);
+        Permission permission = new Permission(null, "permission", "permission desc", null);
         Set<Permission> permissions = new HashSet<>();
         permissions.add(permission);
-        Role role = new Role(1, "role", "role desc", null, permissions);
+        Role role = new Role(null, "role", "role desc", null, permissions);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         permission.setRoles(roles);
 
-        // Role saveRole = roleRepository.save(role);
+        roleRepository.save(role);
 
         List<AppUser> appUserList = new ArrayList<>();
 
         for (int i = 0; i < 26; i++) {
             char c = (char) (i + 97);
-            AppUser appUser = new AppUser(0, c + "@gmail.com", "password", c + "", c + "", null);
+            AppUser appUser = new AppUser(null, c + "@gmail.com", "password", c + "", c + "", null);
             appUserList.add(appUser);
         }
         List<AppUser> saveAppUserList = userRepository.saveAll(appUserList);
