@@ -1,4 +1,14 @@
-# spring-boot-3-web-hibernate-6
+# Getting Started
+
+### Requirements:
+
+```
+Spring Boot: 3.3.5
+Maven: 3.9+
+Java: 17
+Database : MYSQL/H2
+Docker : Tested on 4.34.3 (170107)
+```
 
 Clone this repository:
 
@@ -7,11 +17,33 @@ git clone https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6.git
 cd spring-boot-3-web-hibernate-6
 ```
 
-Start Service:
+### Build Project:
 
 ```bash
-mvn spring-boot:run
+./mvnw clean package
 ```
+
+# Run Project:
+
+### Using H2 DB
+
+```bash
+./mvnw spring-boot:run -D"spring.profiles.active=h2"
+```
+
+### Using MYSQL DB (Docker Should Be Running)
+
+```bash
+docker compose up
+```
+
+```bash
+./mvnw spring-boot:run -D"spring.profiles.active=mysql"
+```
+
+### h2 database console :
+
+http://localhost:8080/h2-console
 
 ### Reference Documentation
 For further reference, please consider the following sections:
