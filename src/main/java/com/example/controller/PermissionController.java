@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.constants.KeyConstants;
 import com.example.entity.Permission;
+import com.example.entity.Role;
 import com.example.service.PermissionService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
@@ -42,4 +43,10 @@ public class PermissionController {
     public ResponseEntity<Page<Permission>> findAllPermissions(@NotNull final Pageable pageable) {
         return new ResponseEntity<>(permissionService.findAllPermissions(pageable), HttpStatus.OK);
     }
+
+    @GetMapping(value = "{permissionId}/roles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<Role>> getAllRolesByPermissionId(@PathVariable Long permissionId, @NotNull final Pageable pageable) {
+        return new ResponseEntity<>(permissionService.getAllRolesByPermissionId(permissionId, pageable), HttpStatus.OK);
+    }
+
 }

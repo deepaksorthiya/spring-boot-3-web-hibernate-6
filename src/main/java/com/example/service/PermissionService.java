@@ -1,8 +1,10 @@
 package com.example.service;
 
 import com.example.entity.Permission;
+import com.example.entity.Role;
 import com.example.global.exceptions.ResourceNotFoundException;
 import com.example.repository.PermissionRepository;
+import com.example.repository.RoleRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class PermissionService {
 
     private final PermissionRepository permissionRepository;
+    private final RoleRepository roleRepository;
 
-    public PermissionService(PermissionRepository permissionRepository) {
+    public PermissionService(PermissionRepository permissionRepository, RoleRepository roleRepository) {
         this.permissionRepository = permissionRepository;
+        this.roleRepository = roleRepository;
     }
 
     public Permission createPermission(Permission permission) {
@@ -35,4 +39,7 @@ public class PermissionService {
         return permissionRepository.findAll(pageable);
     }
 
+    public Page<Role> getAllRolesByPermissionId(Long permissionId, Pageable pageable) {
+        return roleRepository.findByPermissionsPermissionId(permissionId, pageable);
+    }
 }

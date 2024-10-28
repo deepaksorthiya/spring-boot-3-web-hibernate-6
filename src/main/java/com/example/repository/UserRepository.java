@@ -37,4 +37,6 @@ public interface UserRepository extends JpaRepository<AppUser, Long>, CustomUser
 
     @EntityGraph(attributePaths = {"roles", "roles.permissions"})
     Optional<AppUser> findByUserId(Long userId);
+
+    Page<AppUser> findByRolesRoleId(Long roleId, Pageable pageable);
 }

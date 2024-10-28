@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.constants.KeyConstants;
+import com.example.entity.AppUser;
 import com.example.entity.Role;
 import com.example.service.RoleService;
 import jakarta.validation.constraints.NotNull;
@@ -41,5 +42,10 @@ public class RoleController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<Role>> getRoleWithPermissions(@NotNull final Pageable pageable) {
         return new ResponseEntity<>(roleService.getRoleWithPermissions(pageable), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "{roleId}/users", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<AppUser>> findAllAppUsersByRoleId(@PathVariable Long roleId, @NotNull final Pageable pageable) {
+        return new ResponseEntity<>(roleService.findAllAppUsersByRoleId(roleId, pageable), HttpStatus.OK);
     }
 }
