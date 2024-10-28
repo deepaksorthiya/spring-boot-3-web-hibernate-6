@@ -21,7 +21,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public AppUser getUserById(Long userId) {
+    @Transactional
+    public void deleteAppUserById(Long userId) {
+        AppUser user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(userId));
+        // Remove the user from roles to update the join table
+        user.setRoles(null);
+        userRepository.delete(user);
+    }
+
+    public AppUser getAppUserById(Long userId) {
         return userRepository.findByUserId(userId).orElseThrow(() -> new ResourceNotFoundException(userId));
     }
 
@@ -44,13 +52,4 @@ public class UserService {
     public Page<AppUser> getAllUserWithRolesAndPermissions(Pageable pageable) {
         return userRepository.getAllUserWithRolesAndPermissions(pageable);
     }
-
-    @Transactional
-    public void deleteAppUserById(Long userId) {
-        AppUser user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(userId));
-        // Remove the user from roles to update the join table
-        user.setRoles(null);
-        userRepository.delete(user);
-    }
-
 }

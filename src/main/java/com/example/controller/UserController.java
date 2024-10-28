@@ -23,19 +23,19 @@ public class UserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AppUser> createUser(@RequestBody @Validated AppUser appUser) {
+    public ResponseEntity<AppUser> createAppUser(@RequestBody @Validated AppUser appUser) {
         return new ResponseEntity<>(userService.createUser(appUser), HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteAppUser(@PathVariable Long userId) {
+    public ResponseEntity<Void> deleteAppUserById(@PathVariable Long userId) {
         userService.deleteAppUserById(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AppUser> getUserById(@PathVariable Long userId) {
-        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
+    public ResponseEntity<AppUser> getAppUserById(@PathVariable Long userId) {
+        return new ResponseEntity<>(userService.getAppUserById(userId), HttpStatus.OK);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
