@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.constants.KeyConstants;
 import com.example.entity.AppUser;
+import com.example.entity.Role;
 import com.example.service.UserService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(KeyConstants.API_PREFIX + "/users")
@@ -25,6 +28,16 @@ public class UserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppUser> createAppUser(@RequestBody @Validated AppUser appUser) {
         return new ResponseEntity<>(userService.createUser(appUser), HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "{userId}/roles/{roleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppUser> assignRoleToUser(@PathVariable Long userId, @PathVariable Long roleId) {
+        return new ResponseEntity<>(userService.assignRolesToUser(userId, List.of(roleId)), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "{userId}/roles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppUser> assignRolesToUser(@PathVariable Long userId, @RequestBody List<Role> roles) {
+        return new ResponseEntity<>(userService.assignRolesToUser(userId, roles.stream().map(Role::getRoleId).toList()), HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
