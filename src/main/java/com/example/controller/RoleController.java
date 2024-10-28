@@ -2,41 +2,44 @@ package com.example.controller;
 
 import com.example.constants.KeyConstants;
 import com.example.entity.Role;
-import com.example.global.exceptions.ResourceNotFoundException;
-import com.example.repository.RoleRepository;
+import com.example.service.RoleService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(KeyConstants.API_PREFIX + "/roles")
 public class RoleController {
 
-    private RoleRepository roleRepository;
+    private final RoleService roleService;
 
-    public RoleController(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
     }
 
-    @GetMapping(value = "{roleId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Role> getUserById(@PathVariable long roleId) {
-        return new ResponseEntity<>(roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException(roleId)), HttpStatus.OK);
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<Role>> findAll(@NotNull final Pageable pageable,
-                                              @RequestHeader HttpHeaders httpHeaders) {
-        return new ResponseEntity<>(roleRepository.getRoleWithPermissions(pageable), HttpStatus.OK);
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Role> createRole(@RequestBody @Validated Role role) {
+        return new ResponseEntity<>(roleService.createRole(role), HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "{roleId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteRoleById(@PathVariable long roleId) {
-        roleRepository.deleteById(roleId);
+    public ResponseEntity<Void> deleteRoleById(@PathVariable Long roleId) {
+        roleService.deleteRoleById(roleId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "{roleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Role> findByRoleId(@PathVariable Long roleId) {
+        return new ResponseEntity<>(roleService.findByRoleId(roleId), HttpStatus.OK);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<Role>> getRoleWithPermissions(@NotNull final Pageable pageable) {
+        return new ResponseEntity<>(roleService.getRoleWithPermissions(pageable), HttpStatus.OK);
     }
 }

@@ -2,7 +2,10 @@ package com.example.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -32,7 +35,7 @@ public class Role implements Serializable {
     @JsonIgnore
     private Set<AppUser> appUsers;
 
-    @ManyToMany(cascade = CascadeType.ALL, targetEntity = Permission.class)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, targetEntity = Permission.class)
     @JoinTable(name = "ROLE_PERMISSION_MAPPING")
     private Set<Permission> permissions;
 

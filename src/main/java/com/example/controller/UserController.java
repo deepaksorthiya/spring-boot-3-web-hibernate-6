@@ -2,8 +2,7 @@ package com.example.controller;
 
 import com.example.constants.KeyConstants;
 import com.example.entity.AppUser;
-import com.example.global.exceptions.ResourceNotFoundException;
-import com.example.repository.UserRepository;
+import com.example.service.UserService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,50 +16,50 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(KeyConstants.API_PREFIX + "/users")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppUser> createUser(@RequestBody @Validated AppUser appUser) {
-        return new ResponseEntity<>(userRepository.save(appUser), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.createUser(appUser), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(value = "{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteAppUser(@PathVariable Long userId) {
+        userService.deleteAppUserById(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AppUser> getUserById(@PathVariable long userId) {
-        return new ResponseEntity<>(userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(userId)), HttpStatus.OK);
+    public ResponseEntity<AppUser> getUserById(@PathVariable Long userId) {
+        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<AppUser>> findAll(@NotNull final Pageable pageable) {
-        return new ResponseEntity<>(userRepository.findAll(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(userService.findAll(pageable), HttpStatus.OK);
     }
 
     @GetMapping(value = "count", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Long> count() {
-        return new ResponseEntity<>(userRepository.getAllCountUserWithRolesAndPermissions(), HttpStatus.OK);
+    public ResponseEntity<Long> getAllCountUserWithRolesAndPermissions() {
+        return new ResponseEntity<>(userService.getAllCountUserWithRolesAndPermissions(), HttpStatus.OK);
     }
 
     @GetMapping(value = "findAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<AppUser>> getAllUserWithRolesNotPermissions(@NotNull final Pageable pageable) {
-        return new ResponseEntity<>(userRepository.findAllBy(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAllUserWithRolesNotPermissions(pageable), HttpStatus.OK);
     }
 
     @GetMapping(value = "roles", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<AppUser>> getAllUserWithRoles(@NotNull final Pageable pageable) {
-        return new ResponseEntity<>(userRepository.getAllUserWithRoles(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAllUserWithRoles(pageable), HttpStatus.OK);
     }
 
     @GetMapping(value = "roles/permissions", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<AppUser>> getAllUserWithRolesAndPermissions(@NotNull final Pageable pageable) {
-        return new ResponseEntity<>(userRepository.getAllUserWithRolesAndPermissions(pageable), HttpStatus.OK);
-    }
-
-    @DeleteMapping(value = "{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteAppUser(@PathVariable long userId) {
-        userRepository.deleteById(userId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAllUserWithRolesAndPermissions(pageable), HttpStatus.OK);
     }
 }

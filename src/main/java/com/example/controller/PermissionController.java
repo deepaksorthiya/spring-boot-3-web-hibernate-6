@@ -2,32 +2,44 @@ package com.example.controller;
 
 import com.example.constants.KeyConstants;
 import com.example.entity.Permission;
-import com.example.repository.PermissionRepository;
+import com.example.service.PermissionService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(KeyConstants.API_PREFIX + "/permissions")
 public class PermissionController {
 
-    private PermissionRepository permissionRepository;
+    private final PermissionService permissionService;
 
-    public PermissionController(PermissionRepository permissionRepository) {
-        this.permissionRepository = permissionRepository;
+    public PermissionController(PermissionService permissionService) {
+        this.permissionService = permissionService;
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Permission> createPermission(@RequestBody @Validated Permission permission) {
+        return new ResponseEntity<>(permissionService.createPermission(permission), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(value = "{permissionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteByPermissionId(@PathVariable Long permissionId) {
+        permissionService.deleteByPermissionId(permissionId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "{permissionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Permission> findByPermissionId(@PathVariable Long permissionId) {
+        return new ResponseEntity<>(permissionService.findByPermissionId(permissionId), HttpStatus.OK);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<Permission>> findAll(@NotNull final Pageable pageable,
-                                                    @RequestHeader HttpHeaders httpHeaders) {
-        return new ResponseEntity<>(permissionRepository.findAll(pageable), HttpStatus.OK);
+    public ResponseEntity<Page<Permission>> findAllPermissions(@NotNull final Pageable pageable) {
+        return new ResponseEntity<>(permissionService.findAllPermissions(pageable), HttpStatus.OK);
     }
 }
