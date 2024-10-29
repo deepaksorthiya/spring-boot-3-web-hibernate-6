@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<AppUser, Long>, CustomUserRepo {
 
     String USER_AND_ROLE = "SELECT u FROM AppUser u LEFT JOIN FETCH u.roles r";
+    String GET_SINGLE_USER_WITH_ROLE = "SELECT u FROM AppUser u LEFT JOIN FETCH u.roles r WHERE u.userId=:userId";
     String COUNT_USER_AND_ROLE = "SELECT COUNT(*) FROM AppUser u LEFT JOIN u.roles r";
 
     String USER_AND_ROLE_AND_PERMISSION = "SELECT u FROM AppUser u LEFT JOIN FETCH u.roles r LEFT JOIN FETCH r.permissions p";
@@ -37,6 +39,9 @@ public interface UserRepository extends JpaRepository<AppUser, Long>, CustomUser
 
     @EntityGraph(attributePaths = {"roles", "roles.permissions"})
     Optional<AppUser> findByUserId(Long userId);
+
+    @Query(GET_SINGLE_USER_WITH_ROLE)
+    Optional<AppUser> getUserWithRoles(@Param("userId") Long userId);
 
     Page<AppUser> findByRolesRoleId(Long roleId, Pageable pageable);
 }

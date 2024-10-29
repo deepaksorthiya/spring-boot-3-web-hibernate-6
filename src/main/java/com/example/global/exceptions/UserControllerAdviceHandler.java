@@ -2,6 +2,7 @@ package com.example.global.exceptions;
 
 import com.example.global.model.ErrorDto;
 import com.example.global.model.FormFieldDto;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -62,7 +63,7 @@ public class UserControllerAdviceHandler extends ResponseEntityExceptionHandler 
         return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({ResourceNotFoundException.class})
+    @ExceptionHandler({ResourceNotFoundException.class, EntityNotFoundException.class})
     public ResponseEntity<ErrorDto> handleResourceNotFoundException(ResourceNotFoundException resourceNotFoundException,
                                                                     WebRequest webRequest) {
         // Map<String, Object> attr = errorAttributes.getErrorAttributes(webRequest,

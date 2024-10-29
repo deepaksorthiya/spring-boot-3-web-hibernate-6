@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
@@ -21,4 +22,6 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     Optional<Role> findByRoleId(Long roleId);
 
     Page<Role> findByPermissionsPermissionId(Long permissionId, Pageable pageable);
+
+    Set<Role> findByRoleIdIn(Set<Long> roleIds);
 }

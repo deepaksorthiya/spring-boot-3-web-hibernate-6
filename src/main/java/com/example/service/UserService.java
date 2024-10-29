@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,16 +61,33 @@ public class UserService {
     }
 
     @Transactional
-    public AppUser assignRolesToUser(Long userId, List<Long> roleIds) {
-        AppUser user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+    public AppUser assignRolesToUser(Long userId, Set<Role> roles) {
+        AppUser appUser = userRepository.getUserWithRoles(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId));
+        Set<Role> appUserRoles = appUser.getRoles();
+        Set<Role> unassignRoles = roles.stream().filter(role -> !appUserRoles.contains(role)).collect(Collectors.toSet());
+        if (!unassignRoles.isEmpty()) {
+            Set<Long> unassignRoleIds = unassignRoles.stream().map(Role::getRoleId).collect(Collectors.toSet());
+            Set<Role> rolesToAssign = roleRepository.findByRoleIdIn(unassignRoleIds);
+            appUser.getRoles().addAll(rolesToAssign);
+        }
+        return appUser;
+    }
 
-        Set<Role> roles = roleIds.stream()
-                .map(roleId -> roleRepository.findById(roleId)
-                        .orElseThrow(() -> new IllegalArgumentException("Role not found with id: " + roleId)))
-                .collect(Collectors.toSet());
+    @Transactional
+    public AppUser removeRolesFromUser(Long userId, Set<Role> roles) {
+        AppUser appUser = userRepository.getUserWithRoles(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId));
+        Set<Long> filterDelRoles = appUser.getRoles().stream().filter(roles::contains).map(Role::getRoleId).collect(Collectors.toSet());
+        if (!filterDelRoles.isEmpty()) {
+            Set<Role> deletedRoles = roleRepository.findByRoleIdIn(filterDelRoles);
+            appUser.getRoles().removeAll(deletedRoles);
+        }
+        return appUser;
+    }
 
-        user.getRoles().addAll(roles); // Add the roles to the user
-        return userRepository.save(user);
+    public AppUser getAppUserWithRoles(Long userId) {
+        return userRepository.getUserWithRoles(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId));
     }
 }

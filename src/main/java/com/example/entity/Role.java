@@ -2,41 +2,69 @@ package com.example.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-//@ToString
+@ToString
 @Entity
+@Table(
+        name = "ROLES",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "UQ_ROLES_ROLE_NAME", columnNames = {"roleName"})
+        })
 @NamedEntityGraphs(@NamedEntityGraph(name = "graph.Role.permissions", attributeNodes = @NamedAttributeNode("permissions")))
-public class Role implements Serializable {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long roleId;
 
     private String roleName;
 
     private String roleDesc;
 
-    @ManyToMany(mappedBy = "roles", targetEntity = AppUser.class)
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "roles")
     @JsonIgnore
-    private Set<AppUser> appUsers;
+    private Set<AppUser> appUsers = new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, targetEntity = Permission.class)
-    @JoinTable(name = "ROLE_PERMISSION_MAPPING")
-    private Set<Permission> permissions;
+    @ToString.Exclude
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "ROLES_PERMISSIONS_MAPPING",
+            joinColumns = @JoinColumn(name = "ROLE_ID", foreignKey = @ForeignKey(name = "FK_ROLES_PERMISSIONS_MAPPING_ROLES_ROLE_ID")), inverseJoinColumns = @JoinColumn(name = "PERMISSION_ID", foreignKey = @ForeignKey(name = "FK_ROLES_PERMISSIONS_MAPPING_PERMISSIONS_PERMISSION_ID")),
+            uniqueConstraints = {
+                    @UniqueConstraint(name = "UQ_ROLES_PERMISSIONS_MAPPING_USER_ID_ROLE_ID", columnNames = {"ROLE_ID", "PERMISSION_ID"}),
+            }
+    )
+    private Set<Permission> permissions = new HashSet<>();
 
+    public void addPermission(Permission permission) {
+        this.permissions.add(permission);
+        permission.getRoles().add(this);
+    }
+
+    public void removePermission(Permission permission) {
+        this.permissions.remove(permission);
+        permission.getRoles().remove(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(roleId, role.roleId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(roleId);
+    }
 }

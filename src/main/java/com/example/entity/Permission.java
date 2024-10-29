@@ -1,32 +1,47 @@
 package com.example.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-//@ToString
+@ToString
 @Entity
+@Table(
+        name = "PERMISSIONS",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "UQ_PERMISSIONS_PERMISSION_NAME", columnNames = {"permissionName"})
+        })
 public class Permission {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long permissionId;
 
     private String permissionName;
 
     private String permissionDesc;
 
-    @ManyToMany(mappedBy = "permissions", targetEntity = Role.class)
-    @JsonIgnore
-    private Set<Role> roles;
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "permissions")
+    private Set<Role> roles = new HashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Permission that = (Permission) o;
+        return Objects.equals(permissionId, that.permissionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(permissionId);
+    }
 }
