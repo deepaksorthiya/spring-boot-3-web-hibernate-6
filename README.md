@@ -6,7 +6,7 @@
 Spring Boot: 3.3.5
 Maven: 3.9+
 Java: 17
-Database : MYSQL/H2
+Database : POSTGRES/MYSQL/H2
 Docker : Tested on 4.34.3 (170107)
 ```
 
@@ -28,24 +28,85 @@ cd spring-boot-3-web-hibernate-6
 ### Using H2 DB
 
 ```bash
-./mvnw spring-boot:run -D"spring.profiles.active=h2"
+./mvnw spring-boot:run -D"spring-boot.run.profiles=h2"
+```
+
+OR
+
+```bash
+java -D"spring.profiles.active=h2" -jar .\target\spring-boot-3-web-hibernate-6-0.0.1-SNAPSHOT.jar
 ```
 
 ### Using MYSQL DB (Docker Should Be Running)
 
 ```bash
-docker compose up
+docker compose --profile mysql up
 ```
 
 ```bash
-./mvnw spring-boot:run -D"spring.profiles.active=mysql"
+./mvnw spring-boot:run -D"spring-boot.run.profiles=mysql"
+```
+
+OR
+
+```bash
+java -D"spring.profiles.active=mysql" -jar .\target\spring-boot-3-web-hibernate-6-0.0.1-SNAPSHOT.jar
+```
+
+### Using Postgres DB
+
+```bash
+docker compose --profile postgres up
+```
+
+### Start Both DB In Docker (Optional)
+
+```bash
+docker compose --profile postgres --profile mysql up
+```
+
+### Pass DB Credentials via command line(Optional)
+
+```bash
+./mvnw spring-boot:run  -D"spring-boot.run.profiles=postgres" -D'spring-boot.run.arguments="--spring.datasource.url=jdbc:postgresql://localhost:5432/testdb --spring.datasource.username=postgres --spring.datasource.password=postgres"'
+```
+
+OR
+
+```bash
+./mvnw spring-boot:run  -D"spring-boot.run.profiles=postgres" -D'spring-boot.run.jvmArguments="-Dspring.datasource.url=jdbc:postgresql://localhost:5432/testdb -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres"'
+```
+
+OR
+
+```bash
+java -D"spring.profiles.active=postgres" -D"spring.datasource.url=jdbc:postgresql://localhost:5432/testdb" -D"spring.datasource.username=postgres" -D"spring.datasource.password=postgres" -jar .\target\spring-boot-3-web-hibernate-6-0.0.1-SNAPSHOT.jar
 ```
 
 ### h2 database console :
 
 http://localhost:8080/h2-console
 
+### Stop Docker Compose Service and Remove Volume
+
+```bash
+docker compose --profile postgres --profile mysql down -v
+```
+
+OR
+
+```bash
+docker compose --profile mysql down -v
+```
+
+OR
+
+```bash
+docker compose --profile postgres down -v
+```
+
 ### Reference Documentation
+
 For further reference, please consider the following sections:
 
 * [Best Way to Map ManyToMany](https://vladmihalcea.com/the-best-way-to-use-the-manytomany-annotation-with-jpa-and-hibernate/)
@@ -57,6 +118,7 @@ For further reference, please consider the following sections:
 * [Validation](https://docs.spring.io/spring-boot/docs/3.1.5/reference/htmlsingle/index.html#io.validation)
 
 ### Guides
+
 The following guides illustrate how to use some features concretely:
 
 * [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)

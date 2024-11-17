@@ -2,6 +2,8 @@ services:
   ################## MYSQL ###########################
   #username password :: root/root
   mysql:
+    profiles:
+      - mysql
     image: mysql:8.0.40
     container_name: mysql-db-8.0.40
     # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
@@ -18,3 +20,20 @@ services:
       timeout: 30s
       retries: 3
   ################## MYSQL ######################
+
+  ################## POSTGRES ###########################
+  postgres:
+    profiles:
+      - postgres
+    image: postgres:16
+    container_name: postgres-16
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      #- ./docker/postgres/db:/var/lib/postgresql/data
+      - ./docker/postgres/create_database.sql:/docker-entrypoint-initdb.d/create_database.sql
+  ################## POSTGRES ###########################
