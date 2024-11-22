@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.constants.KeyConstants;
 import com.example.entity.AppUser;
 import com.example.entity.Role;
 import com.example.service.RoleService;
@@ -14,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(KeyConstants.API_PREFIX + "/roles")
+@RequestMapping("${api.v1.roles.prefix}")
 public class RoleController {
 
     private final RoleService roleService;

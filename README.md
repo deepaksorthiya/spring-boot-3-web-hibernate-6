@@ -3,11 +3,12 @@
 ### Requirements:
 
 ```
+Git: 2.47.0
 Spring Boot: 3.3.5
 Maven: 3.9+
 Java: 17
-Database : POSTGRES/MYSQL/H2
-Docker : Tested on 4.34.3 (170107)
+Database : POSTGRES-16/MYSQL-8/H2-2.2.224
+Docker Desktop: Tested on 4.36.0
 ```
 
 Clone this repository:

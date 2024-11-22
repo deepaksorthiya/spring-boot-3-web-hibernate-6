@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.constants.KeyConstants;
 import com.example.entity.AppUser;
 import com.example.entity.Role;
 import com.example.service.UserService;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-@RequestMapping(KeyConstants.API_PREFIX + "/users")
+@RequestMapping("${api.v1.users.prefix}")
 public class UserController {
 
     private final UserService userService;
