@@ -11,7 +11,7 @@ Database : POSTGRES-16/MYSQL-8/H2-2.2.224
 Docker Desktop: Tested on 4.36.0
 ```
 
-Clone this repository:
+### Clone this repository:
 
 ```bash
 git clone https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6.git
@@ -24,7 +24,7 @@ cd spring-boot-3-web-hibernate-6
 ./mvnw clean package
 ```
 
-# Run Project:
+## Run Project:
 
 ### Using H2 DB
 
