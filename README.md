@@ -4,7 +4,7 @@
 
 ```
 Git: 2.47.0
-Spring Boot: 3.3.5
+Spring Boot: 3.4.0
 Maven: 3.9+
 Java: 17
 Database : POSTGRES-16/MYSQL-8/H2-2.2.224
