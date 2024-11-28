@@ -13,6 +13,7 @@ import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -39,16 +40,19 @@ public class SpringCommandLineRunner implements CommandLineRunner {
 
     private final ApplicationContext applicationContext;
 
+    private final MessageSource messageSource;
+
 
     public SpringCommandLineRunner(UserRepository userRepository, RoleRepository roleRepository,
                                    PermissionRepository permissionRepository,
-                                   RequestMappingInfoHandlerMapping requestMappingHandlerMapping, ObjectMapper objectMapper, ApplicationContext applicationContext) {
+                                   RequestMappingInfoHandlerMapping requestMappingHandlerMapping, ObjectMapper objectMapper, ApplicationContext applicationContext, MessageSource messageSource) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
         this.requestMappingInfoHandlerMapping = requestMappingHandlerMapping;
         this.objectMapper = objectMapper;
         this.applicationContext = applicationContext;
+        this.messageSource = messageSource;
     }
 
     @Override
@@ -76,6 +80,8 @@ public class SpringCommandLineRunner implements CommandLineRunner {
         log.info("Jakarta Validator Beans : {} ", Arrays.toString(names1));
         log.info("Spring Validator Beans : {} ", Arrays.toString(names2));
         log.info("#######################################################");
+        String msg = messageSource.getMessage("appuser.not.found", new Object[]{1}, Locale.getDefault());
+        log.info("SPRING MSG : {} ", msg);
     }
 
     private void saveTestUserData() {
