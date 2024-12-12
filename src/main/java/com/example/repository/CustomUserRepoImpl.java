@@ -2,14 +2,19 @@ package com.example.repository;
 
 import com.example.dto.AppUserDto;
 import com.example.entity.AppUser;
+import com.example.entity.Permission;
+import com.example.entity.Role;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 public class CustomUserRepoImpl implements CustomUserRepo {
 
     @PersistenceContext
@@ -71,5 +76,40 @@ public class CustomUserRepoImpl implements CustomUserRepo {
          */
         return appUsers;
 
+    }
+
+    @Transactional
+    public void saveTestUserData() {
+        log.info("Saving test user data started");
+        Permission read = new Permission("READ", "Read only permission");
+        Permission write = new Permission("WRITE", "Write permission");
+
+        entityManager.persist(read);
+        entityManager.persist(write);
+
+        Role userRole = new Role("ROLE_USER", "User Role Description");
+        Role adminRole = new Role("ROLE_ADMIN", "Admin Role Description");
+
+        userRole.addPermission(read);
+
+        adminRole.addPermission(read);
+        adminRole.addPermission(write);
+
+        entityManager.persist(userRole);
+        entityManager.persist(adminRole);
+
+        for (int i = 0; i < 26; i++) {
+            char c = (char) (i + 97);
+            AppUser appUser = new AppUser(c + "user@gmail.com", c + "password", c + "firstName", c + "lastName");
+            if (i % 2 == 0) {
+                appUser.addRole(adminRole);
+                // override email to admin
+                appUser.setEmail(c + "admin@gmail.com");
+            } else {
+                appUser.addRole(userRole);
+            }
+            entityManager.persist(appUser);
+        }
+        log.info("Saving test user data completed");
     }
 }

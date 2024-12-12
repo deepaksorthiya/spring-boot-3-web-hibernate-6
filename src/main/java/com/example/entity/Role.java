@@ -45,6 +45,11 @@ public class Role {
     )
     private Set<Permission> permissions = new HashSet<>();
 
+    public Role(String roleName, String roleDesc) {
+        this.roleName = roleName;
+        this.roleDesc = roleDesc;
+    }
+
     public void addPermission(Permission permission) {
         this.permissions.add(permission);
         permission.getRoles().add(this);

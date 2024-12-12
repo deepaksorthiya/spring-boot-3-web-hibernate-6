@@ -8,4 +8,6 @@ public interface CustomUserRepo {
     List<AppUser> getAllUsersByEmailUsingEntityManager(String email);
 
     List<AppUser> getAllUsersByEmailUsingSessionFactory(String email);
+
+    void saveTestUserData();
 }

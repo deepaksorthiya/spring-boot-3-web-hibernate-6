@@ -50,6 +50,13 @@ public class AppUser {
     )
     private Set<Role> roles = new HashSet<>();
 
+    public AppUser(String email, String password, String firstName, String lastName) {
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public void addRole(Role role) {
         this.roles.add(role);
         role.getAppUsers().add(this);

@@ -1,8 +1,5 @@
 package com.example;
 
-import com.example.entity.AppUser;
-import com.example.entity.Permission;
-import com.example.entity.Role;
 import com.example.repository.PermissionRepository;
 import com.example.repository.RoleRepository;
 import com.example.repository.UserRepository;
@@ -19,7 +16,10 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 @Slf4j
@@ -64,10 +64,13 @@ public class SpringCommandLineRunner implements CommandLineRunner {
         log.info("Role Repo : {} ", roleRepository);
         Map<RequestMappingInfo, HandlerMethod> handlersMethod = requestMappingInfoHandlerMapping.getHandlerMethods();
 
-        handlersMethod.forEach((key, value) -> log.info(key.getPathPatternsCondition().getPatternValues() + " : " + key.getMethodsCondition().getMethods()));
+        handlersMethod.forEach((key, value) -> {
+            assert key.getPathPatternsCondition() != null;
+            log.info("{} : {}", key.getPathPatternsCondition().getPatternValues(), key.getMethodsCondition().getMethods());
+        });
 
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlersMethod.entrySet()) {
-            System.out.println(entry.getKey());
+            log.info("{}", entry.getKey());
         }
 
         Set<Object> moduleIds = objectMapper.getRegisteredModuleIds();
@@ -85,28 +88,7 @@ public class SpringCommandLineRunner implements CommandLineRunner {
     }
 
     private void saveTestUserData() {
-        Permission permission = new Permission(null, "permission", "permission desc", null);
-        Set<Permission> permissions = new HashSet<>();
-        permissions.add(permission);
-        Role role = new Role(null, "role", "role desc", null, permissions);
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-        permission.setRoles(roles);
-
-        roleRepository.save(role);
-
-        List<AppUser> appUserList = new ArrayList<>();
-
-        for (int i = 0; i < 26; i++) {
-            char c = (char) (i + 97);
-            AppUser appUser = new AppUser(null, c + "@gmail.com", "password", c + "", c + "", null);
-            appUserList.add(appUser);
-        }
-        List<AppUser> saveAppUserList = userRepository.saveAll(appUserList);
-        for (AppUser u : saveAppUserList) {
-            u.setRoles(roles);
-            userRepository.save(u);
-        }
+        userRepository.saveTestUserData();
     }
 
 }

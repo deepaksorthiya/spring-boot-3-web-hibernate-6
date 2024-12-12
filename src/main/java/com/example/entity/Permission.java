@@ -32,6 +32,11 @@ public class Permission {
     @ManyToMany(mappedBy = "permissions")
     private Set<Role> roles = new HashSet<>();
 
+    public Permission(String permissionName, String permissionDesc) {
+        this.permissionName = permissionName;
+        this.permissionDesc = permissionDesc;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
