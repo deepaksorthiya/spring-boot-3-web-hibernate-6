@@ -30,3 +30,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Docker ###
+/docker/mysql/mysqldata
+/docker/postgres/postgresdata
