@@ -15,9 +15,9 @@ import java.util.Set;
 @ToString
 @Entity
 @Table(
-        name = "ROLES",
+        name = "roles",
         uniqueConstraints = {
-                @UniqueConstraint(name = "UQ_ROLES_ROLE_NAME", columnNames = {"roleName"})
+                @UniqueConstraint(name = "UQ_roles_role_name", columnNames = {"role_name"})
         })
 @NamedEntityGraphs(@NamedEntityGraph(name = "graph.Role.permissions", attributeNodes = @NamedAttributeNode("permissions")))
 public class Role {
@@ -37,10 +37,10 @@ public class Role {
 
     @ToString.Exclude
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "ROLES_PERMISSIONS_MAPPING",
-            joinColumns = @JoinColumn(name = "ROLE_ID", foreignKey = @ForeignKey(name = "FK_ROLES_PERMISSIONS_MAPPING_ROLES_ROLE_ID")), inverseJoinColumns = @JoinColumn(name = "PERMISSION_ID", foreignKey = @ForeignKey(name = "FK_ROLES_PERMISSIONS_MAPPING_PERMISSIONS_PERMISSION_ID")),
+    @JoinTable(name = "roles_permissions_mapping",
+            joinColumns = @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "FK_roles_permissions_mapping_role_id_roles_role_id")), inverseJoinColumns = @JoinColumn(name = "permission_id", foreignKey = @ForeignKey(name = "FK_roles_permissions_mapping_permission_id_permissions_permission_id")),
             uniqueConstraints = {
-                    @UniqueConstraint(name = "UQ_ROLES_PERMISSIONS_MAPPING_USER_ID_ROLE_ID", columnNames = {"ROLE_ID", "PERMISSION_ID"}),
+                    @UniqueConstraint(name = "UQ_roles_permissions_mapping_role_id_permission_id", columnNames = {"role_id", "permission_id"}),
             }
     )
     private Set<Permission> permissions = new HashSet<>();

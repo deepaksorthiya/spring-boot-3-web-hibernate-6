@@ -14,9 +14,9 @@ import java.util.Set;
 @ToString
 @Entity
 @Table(
-        name = "PERMISSIONS",
+        name = "permissions",
         uniqueConstraints = {
-                @UniqueConstraint(name = "UQ_PERMISSIONS_PERMISSION_NAME", columnNames = {"permissionName"})
+                @UniqueConstraint(name = "UQ_permissions_permission_name", columnNames = {"permission_name"})
         })
 public class Permission {
 
