@@ -1,10 +1,12 @@
+[![Java Maven Build Test](https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6/actions/workflows/maven-build.yml/badge.svg)](https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6/actions/workflows/maven-build.yml)
+
 # Getting Started
 
 ### Requirements:
 
 ```
-Git: 2.47.0
-Spring Boot: 3.4.0
+Git: 2.47.1
+Spring Boot: 3.4.1
 Maven: 3.9+
 Java: 17
 Database : POSTGRES-16/MYSQL-8/H2-2.2.224
