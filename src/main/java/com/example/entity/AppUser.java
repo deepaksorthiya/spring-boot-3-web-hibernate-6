@@ -1,5 +1,7 @@
 package com.example.entity;
 
+import com.example.validation.PasswordMatching;
+import com.example.validation.StrongPassword;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -21,6 +23,11 @@ import java.util.Set;
         uniqueConstraints = {
                 @UniqueConstraint(name = "UQ_app_users_email", columnNames = {"email"})
         })
+@PasswordMatching(
+        password = "password",
+        confirmPassword = "confirmPassword",
+        message = "{appuser.password.match}"
+)
 public class AppUser {
 
     @Id
@@ -32,7 +39,13 @@ public class AppUser {
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotBlank(message = "{appuser.password.not.empty}")
+    @StrongPassword(message = "{appuser.password.strong}")
     private String password;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Transient
+    private String confirmPassword;
 
     @NotBlank(message = "{appuser.fname.not.empty}")
     private String firstName;
@@ -50,9 +63,10 @@ public class AppUser {
     )
     private Set<Role> roles = new HashSet<>();
 
-    public AppUser(String email, String password, String firstName, String lastName) {
+    public AppUser(String email, String password, String confirmPassword, String firstName, String lastName) {
         this.email = email;
         this.password = password;
+        this.confirmPassword = confirmPassword;
         this.firstName = firstName;
         this.lastName = lastName;
     }

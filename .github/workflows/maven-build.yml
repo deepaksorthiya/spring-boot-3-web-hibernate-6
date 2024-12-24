@@ -35,4 +35,4 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Clean Build Test with Maven
-        run: mvn clean package --file pom.xml --batch-mode --update-snapshots
+        run: chmod +x mvnw && ./mvnw clean package --file pom.xml --batch-mode --update-snapshots

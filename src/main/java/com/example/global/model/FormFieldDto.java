@@ -11,6 +11,6 @@ import java.util.List;
 @ToString
 public class FormFieldDto {
 
-	private String fieldName;
-	private List<String> errorMsg;
+    private String fieldName;
+    private List<String> errors;
 }
