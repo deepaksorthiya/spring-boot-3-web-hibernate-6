@@ -4,6 +4,7 @@ import com.example.global.model.ErrorDto;
 import com.example.global.model.FormFieldDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -13,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class UserControllerAdviceHandler extends ResponseEntityExceptionHandler {
 
     private final ErrorAttributes errorAttributes;
@@ -44,10 +47,13 @@ public class UserControllerAdviceHandler extends ResponseEntityExceptionHandler 
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         BindingResult bindingResult = exception.getBindingResult();
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+        List<ObjectError> fieldErrors = bindingResult.getAllErrors();
         Map<String, FormFieldDto> maps = new HashMap<>();
-        for (FieldError fieldError : fieldErrors) {
-            String fieldName = fieldError.getField();
+        for (ObjectError fieldError : fieldErrors) {
+            String fieldName = "password";
+            if (fieldError instanceof FieldError error) {
+                fieldName = error.getField();
+            }
             String errorMsg = fieldError.getDefaultMessage();
 
             if (!maps.containsKey(fieldName)) {
@@ -56,7 +62,7 @@ public class UserControllerAdviceHandler extends ResponseEntityExceptionHandler 
                 FormFieldDto formFieldDto = new FormFieldDto(fieldName, errors);
                 maps.put(fieldName, formFieldDto);
             } else {
-                List<String> errors = maps.get(fieldName).getErrorMsg();
+                List<String> errors = maps.get(fieldName).getErrors();
                 errors.add(errorMsg);
 
                 FormFieldDto formFieldDto = new FormFieldDto(fieldName, errors);
@@ -74,8 +80,8 @@ public class UserControllerAdviceHandler extends ResponseEntityExceptionHandler 
         String message = messageSource.getMessage("appuser.not.found", new Object[]{String.valueOf(resourceNotFoundException.getUserId())}, LocaleContextHolder.getLocale());
         Map<String, Object> attr = errorAttributes.getErrorAttributes(request, ErrorAttributeOptions
                 .of(Include.EXCEPTION, Include.BINDING_ERRORS, Include.MESSAGE, Include.STACK_TRACE, Include.PATH, Include.STATUS, Include.ERROR));
-        System.out.println(attr);
-        System.out.println(message);
+        log.info("{}", attr);
+        log.info("{}", message);
         ProblemDetail body = createProblemDetail(resourceNotFoundException, HttpStatus.NOT_FOUND, "Validation failed", "appuser.not.found", new Object[]{String.valueOf(resourceNotFoundException.getUserId())}, request);
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         Assert.state(requestAttributes != null, "Could not find current request via RequestContextHolder");

@@ -27,7 +27,7 @@ public class CustomUserRepoImpl implements CustomUserRepo {
     }
 
     private static AppUser convert(AppUserDto appUserDto) {
-        return new AppUser(appUserDto.userId(), appUserDto.email(), appUserDto.password(), appUserDto.firstName(), appUserDto.lastName(), Collections.emptySet());
+        return new AppUser(appUserDto.userId(), appUserDto.email(), appUserDto.password(), appUserDto.password(), appUserDto.firstName(), appUserDto.lastName(), Collections.emptySet());
     }
 
     @Override
@@ -44,8 +44,8 @@ public class CustomUserRepoImpl implements CustomUserRepo {
         List<AppUserDto> users = query.getResultList();
         entityManager.close();
         long endTime = System.currentTimeMillis();
-        System.out.println(users);
-        System.out.println("Time taken : " + (endTime - startTime));
+        log.info("USERS: {}", users);
+        log.info("Time taken: {}", (endTime - startTime));
         return users.stream().map(CustomUserRepoImpl::convert).toList();
     }
 
@@ -100,7 +100,7 @@ public class CustomUserRepoImpl implements CustomUserRepo {
 
         for (int i = 0; i < 26; i++) {
             char c = (char) (i + 97);
-            AppUser appUser = new AppUser(c + "user@gmail.com", c + "password", c + "firstName", c + "lastName");
+            AppUser appUser = new AppUser(c + "user@gmail.com", c + "Password@123", c + "Password@123", c + "firstName", c + "lastName");
             if (i % 2 == 0) {
                 appUser.addRole(adminRole);
                 // override email to admin
