@@ -2,8 +2,9 @@
 FROM bellsoft/liberica-runtime-container:jdk-17-stream-musl AS builder
 
 WORKDIR /home/app
-ADD . /home/app/spring-boot-3-web-hibernate-6
-RUN cd spring-boot-3-web-hibernate-6 && chmod +x mvnw && ./mvnw -Dmaven.test.skip=true clean package
+COPY . /home/app/spring-boot-3-web-hibernate-6
+WORKDIR /home/app/spring-boot-3-web-hibernate-6
+RUN  chmod +x mvnw && ./mvnw -Dmaven.test.skip=true clean package
 
 # Stage 2: Layer Tool Stage
 FROM bellsoft/liberica-runtime-container:jdk-17-cds-slim-musl AS optimizer

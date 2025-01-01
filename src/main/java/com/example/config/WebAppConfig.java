@@ -23,10 +23,10 @@ public class WebAppConfig {
     public MessageSource messageSource() {
         var resourceBundleMessageSource = new ResourceBundleMessageSource();
         resourceBundleMessageSource.setBasenames("i18n/messages/messages"); // directory with messages_XX.properties
-        resourceBundleMessageSource.setUseCodeAsDefaultMessage(true);
+        resourceBundleMessageSource.setUseCodeAsDefaultMessage(false);
         resourceBundleMessageSource.setDefaultLocale(Locale.getDefault());
         resourceBundleMessageSource.setDefaultEncoding("UTF-8");
-        resourceBundleMessageSource.setAlwaysUseMessageFormat(true);
+        resourceBundleMessageSource.setAlwaysUseMessageFormat(false);
         return resourceBundleMessageSource;
     }
 
