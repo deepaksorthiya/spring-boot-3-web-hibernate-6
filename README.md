@@ -119,6 +119,18 @@ docker compose --profile postgres down -v
 API collection is available on postman. Install [POSTMAN](https://www.postman.com/downloads/) Use this link
 [Postman API Collection](https://www.postman.com/deepaksorthiya/workspace/public-ws/collection/12463530-3a20e484-549d-4561-a11b-ef5d40b7fd3f?action=share&creator=12463530&active-environment=12463530-55c10ebe-548f-4c1b-a5ec-4d4ed996c033)
 
+### I18 messages Testing
+
+```bash
+curl --location 'http://localhost:8080/api/v1/users/111' \
+--header 'Accept-Language: hi'
+```
+
+```bash
+curl --location 'http://localhost:8080/api/v1/users/111' \
+--header 'Accept-Language: en-US'
+```
+
 ### Reference Documentation
 
 For further reference, please consider the following sections:
