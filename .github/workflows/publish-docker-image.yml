@@ -39,7 +39,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Attest
-        uses: actions/attest-build-provenance@v2.2.2
+        uses: actions/attest-build-provenance@v2.2.3
         id: attest
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
