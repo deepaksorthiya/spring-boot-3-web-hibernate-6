@@ -1,4 +1,9 @@
 [![Java Maven Build Test](https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6/actions/workflows/maven-build.yml/badge.svg)](https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6/actions/workflows/maven-build.yml)
+[![Docker Hub badge][dockerhub-badge]][dockerhub]
+
+[dockerhub-badge]: https://img.shields.io/docker/pulls/deepaksorthiya/spring-boot-3-web-hibernate-6
+
+[dockerhub]: https://hub.docker.com/repository/docker/deepaksorthiya/spring-boot-3-web-hibernate-6
 
 ---
 
@@ -8,25 +13,25 @@ Spring Boot Web Mvc JPA Hibernate Example
 
 # Getting Started
 
-### Requirements:
+## Requirements:
 
 ```
 Git: 2.49.0
 Spring Boot: 3.4.4
 Maven: 3.9+
-Java: 17
-Database : POSTGRES-16/MYSQL-8/H2-2.2.224
-Docker Desktop: Tested on 4.39.0
+Java: 21
+Database : POSTGRES-17/MYSQL-8/H2-2.2.224
+Docker Desktop: Tested on 4.40.0
 ```
 
-### Clone this repository:
+## Clone this repository:
 
 ```bash
 git clone https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6.git
 cd spring-boot-3-web-hibernate-6
 ```
 
-### Build Project:
+## Build Project:
 
 ```bash
 ./mvnw clean package
@@ -92,11 +97,11 @@ OR
 java -D"spring.profiles.active=postgres" -D"spring.datasource.url=jdbc:postgresql://localhost:5432/testdb" -D"spring.datasource.username=postgres" -D"spring.datasource.password=postgres" -jar .\target\spring-boot-3-web-hibernate-6-0.0.1-SNAPSHOT.jar
 ```
 
-### h2 database console :
+## h2 database console :
 
 http://localhost:8080/h2-console
 
-### Stop Docker Compose Service and Remove Volume
+## Stop Docker Compose Service and Remove Volume
 
 ```bash
 docker compose --profile postgres --profile mysql down -v
@@ -114,12 +119,12 @@ OR
 docker compose --profile postgres down -v
 ```
 
-### Rest API Collection for Testing
+## Rest API Collection for Testing
 
 API collection is available on postman. Install [POSTMAN](https://www.postman.com/downloads/) Use this link
 [Postman API Collection](https://www.postman.com/deepaksorthiya/workspace/public-ws/collection/12463530-3a20e484-549d-4561-a11b-ef5d40b7fd3f?action=share&creator=12463530&active-environment=12463530-55c10ebe-548f-4c1b-a5ec-4d4ed996c033)
 
-### I18 messages Testing
+## I18 messages Testing
 
 ```bash
 curl --location 'http://localhost:8080/api/v1/users/111' \
@@ -131,7 +136,7 @@ curl --location 'http://localhost:8080/api/v1/users/111' \
 --header 'Accept-Language: en-US'
 ```
 
-### Reference Documentation
+## Reference Documentation
 
 For further reference, please consider the following sections:
 
@@ -143,7 +148,7 @@ For further reference, please consider the following sections:
 * [Spring Data JPA](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/index.html#data.sql.jpa-and-spring-data)
 * [Validation](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/index.html#io.validation)
 
-### Guides
+## Guides
 
 The following guides illustrate how to use some features concretely:
 
