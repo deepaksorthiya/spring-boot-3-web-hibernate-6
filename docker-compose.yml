@@ -24,8 +24,8 @@ services:
   postgres:
     profiles:
       - postgres
-    image: postgres:16
-    container_name: postgres-16
+    image: postgres:17.3
+    container_name: postgres-17.3
     restart: always
     environment:
       - POSTGRES_USER=postgres
