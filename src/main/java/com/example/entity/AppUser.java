@@ -54,6 +54,10 @@ public class AppUser {
     private String lastName;
 
     @ToString.Exclude
+    @ManyToMany(mappedBy = "appUsers")
+    private Set<UserGroup> userGroups = new HashSet<>();
+
+    @ToString.Exclude
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "app_users_roles_mapping",
             joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_app_users_roles_mapping_user_id_app_users_user_id")), inverseJoinColumns = @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "FK_app_users_roles_mapping_role_id_roles_role_id")),
@@ -79,6 +83,17 @@ public class AppUser {
     public void removeRole(Role role) {
         this.roles.remove(role);
         role.getAppUsers().remove(this);
+    }
+
+    // Helper methods for bidirectional relationship management
+    public void addToGroup(UserGroup group) {
+        this.userGroups.add(group);
+        group.getAppUsers().add(this);
+    }
+
+    public void removeFromGroup(UserGroup group) {
+        this.userGroups.remove(group);
+        group.getAppUsers().remove(this);
     }
 
     @Override

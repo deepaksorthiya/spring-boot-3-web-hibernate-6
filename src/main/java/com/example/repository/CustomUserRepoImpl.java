@@ -4,6 +4,7 @@ import com.example.dto.AppUserDto;
 import com.example.entity.AppUser;
 import com.example.entity.Permission;
 import com.example.entity.Role;
+import com.example.entity.UserGroup;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceContext;
@@ -27,7 +28,7 @@ public class CustomUserRepoImpl implements CustomUserRepo {
     }
 
     private static AppUser convert(AppUserDto appUserDto) {
-        return new AppUser(appUserDto.userId(), appUserDto.email(), appUserDto.password(), appUserDto.password(), appUserDto.firstName(), appUserDto.lastName(), Collections.emptySet());
+        return new AppUser(appUserDto.userId(), appUserDto.email(), appUserDto.password(), appUserDto.password(), appUserDto.firstName(), appUserDto.lastName(), Collections.emptySet(), Collections.emptySet());
     }
 
     @Override
@@ -80,6 +81,16 @@ public class CustomUserRepoImpl implements CustomUserRepo {
 
     @Transactional
     public void saveTestUserData() {
+
+        // Create groups
+        UserGroup adminGroup = new UserGroup("Administrators", "System administrators");
+        UserGroup userGroup = new UserGroup("Users", "Regular users");
+        UserGroup guestGroup = new UserGroup("Guests", "Guest users with limited access");
+
+        entityManager.persist(adminGroup);
+        entityManager.persist(userGroup);
+        entityManager.persist(guestGroup);
+
         log.info("Saving test user data started");
         Permission read = new Permission("READ", "Read only permission");
         Permission write = new Permission("WRITE", "Write permission");
@@ -98,15 +109,20 @@ public class CustomUserRepoImpl implements CustomUserRepo {
         entityManager.persist(userRole);
         entityManager.persist(adminRole);
 
-        for (int i = 0; i < 26; i++) {
-            char c = (char) (i + 97);
+        for (int i = 1; i <= 26; i++) {
+            char c = (char) (i + 96);
             AppUser appUser = new AppUser(c + "user@gmail.com", c + "Password@123", c + "Password@123", c + "firstName", c + "lastName");
             if (i % 2 == 0) {
                 appUser.addRole(adminRole);
                 // override email to admin
                 appUser.setEmail(c + "admin@gmail.com");
+                appUser.addToGroup(adminGroup);
+            } else if (i % 3 == 0) {
+                appUser.addRole(userRole);
+                appUser.addToGroup(userGroup);
             } else {
                 appUser.addRole(userRole);
+                appUser.addToGroup(guestGroup);
             }
             entityManager.persist(appUser);
         }

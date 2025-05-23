@@ -2,14 +2,18 @@ package com.example.service;
 
 import com.example.entity.AppUser;
 import com.example.entity.Role;
+import com.example.entity.UserGroup;
 import com.example.global.exceptions.ResourceNotFoundException;
 import com.example.repository.RoleRepository;
+import com.example.repository.UserGroupRepository;
 import com.example.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,10 +22,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserGroupRepository groupRepository;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserGroupRepository groupRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.groupRepository = groupRepository;
     }
 
     public AppUser createUser(AppUser user) {
@@ -89,5 +95,46 @@ public class UserService {
     public AppUser getAppUserWithRoles(Long userId) {
         return userRepository.getUserWithRoles(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(userId));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AppUser> getAllUsersWithGroups() {
+        return userRepository.findAllWithGroups();
+    }
+
+    @Transactional(readOnly = true)
+    public Set<UserGroup> getUserGroups(Long userId) {
+        AppUser appUser = userRepository.findByUserIdWithGroups(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return appUser.getUserGroups();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<AppUser> getUserWithGroupsById(Long id) {
+        return userRepository.findByUserIdWithGroups(id);
+    }
+
+    @Transactional
+    public void addUserToGroup(Long userId, Long groupId) {
+        AppUser appUser = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        UserGroup userGroup = groupRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("Group not found"));
+
+        appUser.addToGroup(userGroup);
+        userRepository.save(appUser);
+    }
+
+    @Transactional
+    public void removeUserFromGroup(Long userId, Long groupId) {
+        AppUser appUser = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        UserGroup userGroup = groupRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("Group not found"));
+
+        appUser.removeFromGroup(userGroup);
+        userRepository.save(appUser);
     }
 }

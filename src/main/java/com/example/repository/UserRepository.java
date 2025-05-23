@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -44,4 +45,10 @@ public interface UserRepository extends JpaRepository<AppUser, Long>, CustomUser
     Optional<AppUser> getUserWithRoles(@Param("userId") Long userId);
 
     Page<AppUser> findByRolesRoleId(Long roleId, Pageable pageable);
+
+    @Query("SELECT u FROM AppUser u LEFT JOIN FETCH u.userGroups WHERE u.userId = :userId")
+    Optional<AppUser> findByUserIdWithGroups(@Param("userId") Long userId);
+
+    @Query("SELECT u FROM AppUser u LEFT JOIN FETCH u.userGroups")
+    List<AppUser> findAllWithGroups();
 }
