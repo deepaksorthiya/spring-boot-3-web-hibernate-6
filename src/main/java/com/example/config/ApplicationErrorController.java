@@ -9,6 +9,7 @@ import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,6 +40,8 @@ public class ApplicationErrorController extends AbstractErrorController {
             return new ResponseEntity<>(status);
         }
         Map<String, Object> body = getErrorAttributes(request, getErrorAttributeOptions(request, MediaType.ALL));
+        // TODO implement ProblemDetail here
+        ProblemDetail problemDetail = ProblemDetail.forStatus(status);
         return new ResponseEntity<>(body, status);
     }
 
