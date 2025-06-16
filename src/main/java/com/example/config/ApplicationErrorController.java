@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.Map;
 
 /**
@@ -40,9 +41,11 @@ public class ApplicationErrorController extends AbstractErrorController {
             return new ResponseEntity<>(status);
         }
         Map<String, Object> body = getErrorAttributes(request, getErrorAttributeOptions(request, MediaType.ALL));
-        // TODO implement ProblemDetail here
         ProblemDetail problemDetail = ProblemDetail.forStatus(status);
-        return new ResponseEntity<>(body, status);
+        problemDetail.setType(URI.create(request.getRequestURI()));
+        problemDetail.setInstance(URI.create(request.getRequestURI()));
+        problemDetail.setProperties(body);
+        return new ResponseEntity<>(problemDetail, status);
     }
 
     protected ErrorAttributeOptions getErrorAttributeOptions(HttpServletRequest request, MediaType mediaType) {
