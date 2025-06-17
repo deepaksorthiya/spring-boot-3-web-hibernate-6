@@ -1,6 +1,5 @@
 package com.example.global.exceptions;
 
-import com.example.global.model.ErrorDto;
 import com.example.global.model.FormFieldDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +23,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,9 +67,10 @@ public class UserControllerAdviceHandler extends ResponseEntityExceptionHandler 
             }
 
         }
-        // TODO implement ProblemDetail here
-        ErrorDto errorDto = new ErrorDto("Invalid details. Please provide correct information.", LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), maps);
-        return new ResponseEntity<>(errorDto, headers, HttpStatus.BAD_REQUEST);
+        //ErrorDto errorDto = new ErrorDto("Invalid details. Please provide correct information.", LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), maps);
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, exception.getMessage());
+        problemDetail.setProperty("errors", maps);
+        return new ResponseEntity<>(problemDetail, headers, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({ResourceNotFoundException.class})
