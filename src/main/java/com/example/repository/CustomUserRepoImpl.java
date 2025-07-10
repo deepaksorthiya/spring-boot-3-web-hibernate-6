@@ -32,16 +32,25 @@ public class CustomUserRepoImpl implements CustomUserRepo {
     }
 
     @Override
-    public List<AppUser> getAllUsersByEmailUsingEntityManager(String email) {
+    public List<AppUser> getAllUsersByEmailUsingEntityManager(String email, int start, int max) {
         long startTime = System.currentTimeMillis();
+        // pagination will be done in in-memory when using join fetch for below query
+//        Query query = entityManager.createQuery("""
+//                       SELECT u
+//                       FROM AppUser u
+//                       join fetch u.roles
+//                       where u.email like :email
+//                """);
         // Execute the query
         Query query = entityManager.createQuery("""
                        SELECT new com.example.dto.AppUserDto(u.userId, u.email, u.password, u.firstName, u.lastName)
-                       FROM AppUser u where u.email like :email
+                       FROM AppUser u
+                       where u.email like :email
                 """);
         query.setParameter("email", "%" + email + "%");
         // limit query not work for all databases
-        query.setMaxResults(10);
+        query.setMaxResults(max);
+        query.setFirstResult(start);
         List<AppUserDto> users = query.getResultList();
         entityManager.close();
         long endTime = System.currentTimeMillis();

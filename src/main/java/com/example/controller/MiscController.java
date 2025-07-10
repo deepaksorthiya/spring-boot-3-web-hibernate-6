@@ -21,8 +21,8 @@ public class MiscController {
     }
 
     @GetMapping(value = "/getAllUsersByEmailUsingEntityManager", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AppUser>> getAllUsersByEmailUsingEntityManager(@RequestParam String email) {
-        List<AppUser> users = userRepository.getAllUsersByEmailUsingEntityManager(email);
+    public ResponseEntity<List<AppUser>> getAllUsersByEmailUsingEntityManager(@RequestParam String email, @RequestParam int start, @RequestParam int max) {
+        List<AppUser> users = userRepository.getAllUsersByEmailUsingEntityManager(email, start, max);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
