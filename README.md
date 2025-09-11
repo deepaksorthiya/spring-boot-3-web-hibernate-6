@@ -21,7 +21,7 @@ Spring Boot: 3.5.5
 Maven: 3.9+
 Java: 24
 Database : POSTGRES-17/MYSQL-8/H2-2.2.224
-Docker Desktop: Tested on 4.42.0
+Docker Desktop: Tested on 4.45.0
 ```
 
 ## Clone this repository:

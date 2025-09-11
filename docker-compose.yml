@@ -4,8 +4,8 @@ services:
   mysql:
     profiles:
       - mysql
-    image: mysql:8.0.40
-    container_name: mysql-db-8.0.40
+    image: mysql:9.4.0
+    container_name: mysql-db-9.4.0
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: testdb
@@ -24,8 +24,8 @@ services:
   postgres:
     profiles:
       - postgres
-    image: postgres:17.3
-    container_name: postgres-17.3
+    image: postgres:17.6
+    container_name: postgres-17.6
     restart: always
     environment:
       - POSTGRES_USER=postgres
