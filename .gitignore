@@ -32,5 +32,4 @@ build/
 .vscode/
 
 ### Docker ###
-/docker/mysql/mysqldata
-/docker/postgres/postgresdata
+docker
