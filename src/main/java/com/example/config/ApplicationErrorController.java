@@ -19,9 +19,8 @@ import java.util.Map;
 
 /**
  * This will work only if no exception handler configured or exception not
- * handle by {@link org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler}
- * or custom exceptions handlers and
- * Internally tomcat is configured to redirect to status base error pages like 404.html or 404.jsp and if no
+ * handle by {@link org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler}.
+ * Internally tomcat is configured to redirect to http status base error pages like 404.html or 404.jsp and if no
  * pages configured redirected to /error when
  * unhandled exception thrown
  *

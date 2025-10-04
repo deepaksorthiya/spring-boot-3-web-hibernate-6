@@ -44,8 +44,7 @@ public class AppUser {
     private String password;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Transient
-    private String confirmPassword;
+    private transient String confirmPassword;
 
     @NotBlank(message = "{appuser.fname.not.empty}")
     private String firstName;

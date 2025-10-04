@@ -17,9 +17,9 @@ Spring Boot Web Mvc JPA Hibernate Example
 
 ```
 Git: 2.51.0
-Spring Boot: 3.5.5
+Spring Boot: 3.5.6
 Maven: 3.9+
-Java: 24
+Java: 25
 Database : POSTGRES-17/MYSQL-8/H2-2.2.224
 Docker Desktop: Tested on 4.45.0
 ```
