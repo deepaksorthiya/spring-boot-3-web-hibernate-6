@@ -1,27 +1,17 @@
 package com.example.validation;
 
+import com.example.entity.AppUser;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.beans.BeanWrapperImpl;
 
 import java.util.Objects;
 
-public class PasswordMatchingValidator implements ConstraintValidator<PasswordMatching, Object> {
-
-    private String password;
-    private String confirmPassword;
+public class PasswordMatchingValidator implements ConstraintValidator<PasswordMatching, AppUser> {
 
     @Override
-    public void initialize(PasswordMatching matching) {
-        this.password = matching.password();
-        this.confirmPassword = matching.confirmPassword();
-    }
-
-    @Override
-    public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
-        Object passwordValue = new BeanWrapperImpl(value).getPropertyValue(password);
-        Object confirmPasswordValue = new BeanWrapperImpl(value).getPropertyValue(confirmPassword);
-
+    public boolean isValid(AppUser appUser, ConstraintValidatorContext constraintValidatorContext) {
+        String passwordValue = appUser.getPassword();
+        String confirmPasswordValue = appUser.getConfirmPassword();
         return Objects.equals(passwordValue, confirmPasswordValue);
     }
 }

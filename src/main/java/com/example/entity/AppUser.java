@@ -23,11 +23,7 @@ import java.util.Set;
         uniqueConstraints = {
                 @UniqueConstraint(name = "UQ_app_users_email", columnNames = {"email"})
         })
-@PasswordMatching(
-        password = "password",
-        confirmPassword = "confirmPassword",
-        message = "{appuser.password.match}"
-)
+@PasswordMatching(message = "{appuser.password.match}")
 public class AppUser {
 
     @Id
