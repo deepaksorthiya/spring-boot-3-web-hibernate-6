@@ -40,6 +40,8 @@ public class AppUser {
     private String password;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    //@org.springframework.data.annotation.Transient // also works without transient keyword
+    //@Transient // not working as during password matching validation this comes as null
     private transient String confirmPassword;
 
     @NotBlank(message = "{appuser.fname.not.empty}")
