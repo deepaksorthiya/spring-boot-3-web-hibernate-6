@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DataJpaTest
+@DataJpaTest(properties = "spring.jpa.properties.hibernate.jdbc.batch_size=20")
 class RoleRepositoryIntegrationTest {
 
     @Autowired
