@@ -1,0 +1,62 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+
+# currently disabling gaalvm native build to avoid resource consumption on github action runner
+name: GraalVM Maven Build
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - "README.md"
+      - ".gitignore"
+      - "docs/**"
+      - "images/**"
+      - "k8s/**"
+      - "docker-compose.yml"
+      - "docker/**"
+      - ".dockerignore"
+      - ".gitattributes"
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: GraalVM Maven Build
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Set up GraalVM JDK 25
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: "25"
+          distribution: "graalvm"
+
+      - name: Set Execution Permission
+        run: |
+          chmod +x mvnw
+
+      - name: Check JVM GraalVM Maven Versions
+        run: |
+          echo "GRAALVM_HOME: $GRAALVM_HOME"
+          echo "JAVA_HOME: $JAVA_HOME"
+          java --version
+          native-image --version
+          mvn -v
+          ./mvnw -v
+
+#      - name: Run Tests In Native Mode with GraalVM and Maven
+#        run: ./mvnw -PnativeTest test --file pom.xml --batch-mode --update-snapshots
+
+#      - name: Create Native Image Build with GraalVM and Maven
+#        run: ./mvnw -Pnative native:compile -DskipTests --file pom.xml --batch-mode --update-snapshots
