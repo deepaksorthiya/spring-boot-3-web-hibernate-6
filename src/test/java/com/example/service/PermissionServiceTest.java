@@ -59,11 +59,18 @@ class PermissionServiceTest {
     @Test
     @DisplayName("Should delete permission by ID")
     void testDeleteByPermissionId() {
-        doNothing().when(permissionRepository).deleteById(1L);
+        Role role = new Role("ROLE_ADMIN", "Admin");
+        samplePermission.getRoles().add(role);
+        role.getPermissions().add(samplePermission);
+
+        when(permissionRepository.findById(1L)).thenReturn(Optional.of(samplePermission));
+        doNothing().when(permissionRepository).delete(samplePermission);
 
         permissionService.deleteByPermissionId(1L);
 
-        verify(permissionRepository, times(1)).deleteById(1L);
+        verify(permissionRepository, times(1)).findById(1L);
+        verify(permissionRepository, times(1)).delete(samplePermission);
+        assertThat(role.getPermissions()).doesNotContain(samplePermission);
     }
 
     @Test

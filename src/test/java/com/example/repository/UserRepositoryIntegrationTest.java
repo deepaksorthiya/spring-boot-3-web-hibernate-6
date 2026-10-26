@@ -159,4 +159,13 @@ class UserRepositoryIntegrationTest {
         AppUser foundUser1 = users.stream().filter(u -> u.getUserId().equals(user1.getUserId())).findFirst().orElseThrow();
         assertThat(foundUser1.getUserGroups()).isNotEmpty();
     }
+
+    @Test
+    @DisplayName("Should find all users with roles by role ID via JPQL JOIN FETCH")
+    void testFindAllWithRolesByRoleId() {
+        List<AppUser> users = userRepository.findAllWithRolesByRoleId(roleAdmin.getRoleId());
+        assertThat(users).hasSize(1);
+        assertEquals(user1Email, users.getFirst().getEmail());
+        assertThat(users.getFirst().getRoles()).extracting(Role::getRoleName).contains(adminRoleName);
+    }
 }

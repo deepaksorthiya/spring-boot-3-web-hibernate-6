@@ -9,7 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class PermissionService {
@@ -27,11 +29,17 @@ public class PermissionService {
     }
 
     @Transactional
-    public void deleteByPermissionId(@PathVariable Long permissionId) {
-        permissionRepository.deleteById(permissionId);
+    public void deleteByPermissionId(Long permissionId) {
+        Permission permission = permissionRepository.findById(permissionId).orElseThrow(() -> new ResourceNotFoundException(permissionId));
+        // Disassociate from roles (owning side) so the join table entries are removed
+        Set<Role> roles = new HashSet<>(permission.getRoles());
+        for (Role role : roles) {
+            role.removePermission(permission);
+        }
+        permissionRepository.delete(permission);
     }
 
-    public Permission findByPermissionId(@PathVariable Long permissionId) {
+    public Permission findByPermissionId(Long permissionId) {
         return permissionRepository.findById(permissionId).orElseThrow(() -> new ResourceNotFoundException(permissionId));
     }
 

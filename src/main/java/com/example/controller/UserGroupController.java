@@ -72,9 +72,6 @@ public class UserGroupController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGroup(@PathVariable Long id) {
-        // Check if group exists
-        groupService.getGroupById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(id));
         groupService.deleteGroup(id);
         return ResponseEntity.noContent().build();
     }

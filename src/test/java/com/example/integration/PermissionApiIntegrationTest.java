@@ -70,4 +70,20 @@ class PermissionApiIntegrationTest {
                 "/api/v1/permissions/" + permId, Map.class);
         assertEquals(HttpStatus.NOT_FOUND, notFoundResponse.getStatusCode());
     }
+
+    @Test
+    @DisplayName("Should delete permission associated with roles without referential integrity violation")
+    void testDeletePermissionAssociatedWithRole() {
+        ResponseEntity<Void> deleteResponse = restTemplate.exchange(
+                "/api/v1/permissions/2",
+                HttpMethod.DELETE,
+                null,
+                Void.class
+        );
+        assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
+
+        ResponseEntity<Map> notFoundResponse = restTemplate.getForEntity(
+                "/api/v1/permissions/2", Map.class);
+        assertEquals(HttpStatus.NOT_FOUND, notFoundResponse.getStatusCode());
+    }
 }

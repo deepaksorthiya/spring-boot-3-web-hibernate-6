@@ -60,6 +60,16 @@ public class Role {
         permission.getRoles().remove(this);
     }
 
+    public void addAppUser(AppUser appUser) {
+        this.appUsers.add(appUser);
+        appUser.getRoles().add(this);
+    }
+
+    public void removeAppUser(AppUser appUser) {
+        this.appUsers.remove(appUser);
+        appUser.getRoles().remove(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.entity.AppUser;
 import com.example.entity.UserGroup;
+import com.example.global.exceptions.ResourceNotFoundException;
 import com.example.repository.UserGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,10 @@ public class UserGroupService {
 
     @Transactional
     public void deleteGroup(Long id) {
-        groupRepository.deleteById(id);
+        // Check if group exists
+        UserGroup userGroup = groupRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id));
+        groupRepository.delete(userGroup);
     }
 
     @Transactional(readOnly = true)

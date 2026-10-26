@@ -51,4 +51,7 @@ public interface UserRepository extends JpaRepository<AppUser, Long>, CustomUser
 
     @Query("SELECT u FROM AppUser u LEFT JOIN FETCH u.userGroups")
     List<AppUser> findAllWithGroups();
+
+    @Query("SELECT DISTINCT u FROM AppUser u JOIN FETCH u.roles r WHERE r.roleId = :roleId")
+    List<AppUser> findAllWithRolesByRoleId(@Param("roleId") Long roleId);
 }

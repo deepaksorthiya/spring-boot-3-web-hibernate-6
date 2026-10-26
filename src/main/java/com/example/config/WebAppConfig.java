@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Locale;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableTransactionManagement
 public class WebAppConfig {
 

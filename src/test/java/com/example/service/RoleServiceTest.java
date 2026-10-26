@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.entity.AppUser;
+import com.example.entity.Permission;
 import com.example.entity.Role;
 import com.example.global.exceptions.ResourceNotFoundException;
 import com.example.repository.RoleRepository;
@@ -60,13 +61,24 @@ class RoleServiceTest {
     @Test
     @DisplayName("Should delete role by ID when role exists")
     void testDeleteRoleById_Success() {
+        AppUser user = new AppUser("user@example.com", "pass", "pass", "John", "Doe");
+        user.setUserId(10L);
+        user.getRoles().add(sampleRole);
+
+        Permission permission = new Permission("READ", "Read perm");
+        permission.setPermissionId(20L);
+        sampleRole.getPermissions().add(permission);
+
         when(roleRepository.findById(1L)).thenReturn(Optional.of(sampleRole));
+        when(userRepository.findAllWithRolesByRoleId(1L)).thenReturn(List.of(user));
         doNothing().when(roleRepository).delete(sampleRole);
 
         roleService.deleteRoleById(1L);
 
-        assertNull(sampleRole.getPermissions());
+        assertThat(user.getRoles()).doesNotContain(sampleRole);
+        assertThat(sampleRole.getPermissions()).isEmpty();
         verify(roleRepository, times(1)).findById(1L);
+        verify(userRepository, times(1)).findAllWithRolesByRoleId(1L);
         verify(roleRepository, times(1)).delete(sampleRole);
     }
 
@@ -76,6 +88,7 @@ class RoleServiceTest {
         when(roleRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> roleService.deleteRoleById(99L));
+        verify(userRepository, never()).findAllWithRolesByRoleId(any());
         verify(roleRepository, never()).delete(any());
     }
 

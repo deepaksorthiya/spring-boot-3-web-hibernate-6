@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.config.WebAppConfig;
 import com.example.entity.AppUser;
 import com.example.entity.UserGroup;
+import com.example.global.exceptions.ResourceNotFoundException;
 import com.example.global.exceptions.UserControllerAdviceHandler;
 import com.example.service.UserGroupService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -182,25 +183,22 @@ class UserGroupControllerTest {
     @Test
     @DisplayName("DELETE /api/v1/groups/{id} - Should delete group when found and return 204 No Content")
     void testDeleteGroup_Success() throws Exception {
-        when(groupService.getGroupById(1L)).thenReturn(Optional.of(sampleGroup));
         doNothing().when(groupService).deleteGroup(1L);
 
         mockMvc.perform(delete("/api/v1/groups/{id}", 1L))
                 .andExpect(status().isNoContent());
 
-        verify(groupService, times(1)).getGroupById(1L);
         verify(groupService, times(1)).deleteGroup(1L);
     }
 
     @Test
     @DisplayName("DELETE /api/v1/groups/{id} - Should return 404 when deleting non-existent group")
     void testDeleteGroup_NotFound() throws Exception {
-        when(groupService.getGroupById(99L)).thenReturn(Optional.empty());
+        doThrow(new ResourceNotFoundException(99L)).when(groupService).deleteGroup(99L);
 
         mockMvc.perform(delete("/api/v1/groups/{id}", 99L))
                 .andExpect(status().isNotFound());
 
-        verify(groupService, times(1)).getGroupById(99L);
-        verify(groupService, never()).deleteGroup(any());
+        verify(groupService, times(1)).deleteGroup(any());
     }
 }

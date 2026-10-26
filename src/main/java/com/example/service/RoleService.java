@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class RoleService {
 
@@ -27,9 +29,19 @@ public class RoleService {
 
     @Transactional
     public void deleteRoleById(Long roleId) {
-        Role role = roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException(roleId));
-        // Remove the user from roles to update the join table
-        role.setPermissions(null);
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new ResourceNotFoundException(roleId));
+
+        // 1. Fetch all users who have this role WITH their roles in 1 single JPQL query (avoids N+1 lazy SELECTs)
+        List<AppUser> users = userRepository.findAllWithRolesByRoleId(roleId);
+        for (AppUser user : users) {
+            user.getRoles().remove(role);
+        }
+
+        // 2. Clear permissions on the owning side (Role owns permissions)
+        role.getPermissions().clear();
+
+        // 3. Delete the role
         roleRepository.delete(role);
     }
 

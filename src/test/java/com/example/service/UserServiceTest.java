@@ -75,12 +75,23 @@ class UserServiceTest {
     @Test
     @DisplayName("Should delete user by ID when user exists")
     void testDeleteAppUserById_Success() {
+        Role role = new Role("ROLE_USER", "User role");
+        role.setRoleId(10L);
+        UserGroup group = new UserGroup("Admins", "Admin group");
+        group.setUserGroupId(20L);
+
+        sampleUser.addRole(role);
+        sampleUser.addToGroup(group);
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(sampleUser));
         doNothing().when(userRepository).delete(sampleUser);
 
         userService.deleteAppUserById(1L);
 
-        assertNull(sampleUser.getRoles());
+        assertThat(sampleUser.getRoles()).isEmpty();
+        assertThat(role.getAppUsers()).doesNotContain(sampleUser);
+        assertThat(sampleUser.getUserGroups()).isEmpty();
+        assertThat(group.getAppUsers()).doesNotContain(sampleUser);
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, times(1)).delete(sampleUser);
     }
@@ -203,6 +214,19 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Should return user immediately when assigning null or empty roles")
+    void testAssignRolesToUser_NullOrEmptyRoles() {
+        when(userRepository.getUserWithRoles(1L)).thenReturn(Optional.of(sampleUser));
+
+        AppUser updatedNull = userService.assignRolesToUser(1L, null);
+        AppUser updatedEmpty = userService.assignRolesToUser(1L, Set.of());
+
+        assertThat(updatedNull).isSameAs(sampleUser);
+        assertThat(updatedEmpty).isSameAs(sampleUser);
+        verify(roleRepository, never()).findByRoleIdIn(any());
+    }
+
+    @Test
     @DisplayName("Should throw ResourceNotFoundException when assigning roles to non-existent user")
     void testAssignRolesToUser_UserNotFound() {
         when(userRepository.getUserWithRoles(99L)).thenReturn(Optional.empty());
@@ -214,13 +238,14 @@ class UserServiceTest {
     @DisplayName("Should remove roles from user")
     void testRemoveRolesFromUser_MatchingRoles() {
         sampleUser.setRoles(new HashSet<>(Set.of(sampleRole)));
+        sampleRole.getAppUsers().add(sampleUser);
         when(userRepository.getUserWithRoles(1L)).thenReturn(Optional.of(sampleUser));
-        when(roleRepository.findByRoleIdIn(Set.of(10L))).thenReturn(Set.of(sampleRole));
 
         AppUser updated = userService.removeRolesFromUser(1L, Set.of(sampleRole));
 
         assertThat(updated.getRoles()).doesNotContain(sampleRole);
-        verify(roleRepository, times(1)).findByRoleIdIn(Set.of(10L));
+        assertThat(sampleRole.getAppUsers()).doesNotContain(sampleUser);
+        verify(roleRepository, never()).findByRoleIdIn(any());
     }
 
     @Test
@@ -232,6 +257,19 @@ class UserServiceTest {
         AppUser updated = userService.removeRolesFromUser(1L, Set.of(sampleRole));
 
         assertThat(updated.getRoles()).isEmpty();
+        verify(roleRepository, never()).findByRoleIdIn(any());
+    }
+
+    @Test
+    @DisplayName("Should return user immediately when removing null or empty roles")
+    void testRemoveRolesFromUser_NullOrEmptyRoles() {
+        when(userRepository.getUserWithRoles(1L)).thenReturn(Optional.of(sampleUser));
+
+        AppUser updatedNull = userService.removeRolesFromUser(1L, null);
+        AppUser updatedEmpty = userService.removeRolesFromUser(1L, Set.of());
+
+        assertThat(updatedNull).isSameAs(sampleUser);
+        assertThat(updatedEmpty).isSameAs(sampleUser);
         verify(roleRepository, never()).findByRoleIdIn(any());
     }
 
@@ -311,13 +349,14 @@ class UserServiceTest {
         sampleUser.setUserGroups(new HashSet<>());
         when(userRepository.findById(1L)).thenReturn(Optional.of(sampleUser));
         when(groupRepository.findById(100L)).thenReturn(Optional.of(sampleGroup));
-        when(userRepository.save(sampleUser)).thenReturn(sampleUser);
+        when(groupRepository.save(sampleGroup)).thenReturn(sampleGroup);
 
         userService.addUserToGroup(1L, 100L);
 
         assertTrue(sampleUser.getUserGroups().contains(sampleGroup));
         assertTrue(sampleGroup.getAppUsers().contains(sampleUser));
-        verify(userRepository, times(1)).save(sampleUser);
+        verify(groupRepository, times(1)).save(sampleGroup);
+        verify(userRepository, never()).save(any());
     }
 
     @Test
@@ -347,13 +386,14 @@ class UserServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(sampleUser));
         when(groupRepository.findById(100L)).thenReturn(Optional.of(sampleGroup));
-        when(userRepository.save(sampleUser)).thenReturn(sampleUser);
+        when(groupRepository.save(sampleGroup)).thenReturn(sampleGroup);
 
         userService.removeUserFromGroup(1L, 100L);
 
         assertFalse(sampleUser.getUserGroups().contains(sampleGroup));
         assertFalse(sampleGroup.getAppUsers().contains(sampleUser));
-        verify(userRepository, times(1)).save(sampleUser);
+        verify(groupRepository, times(1)).save(sampleGroup);
+        verify(userRepository, never()).save(any());
     }
 
     @Test

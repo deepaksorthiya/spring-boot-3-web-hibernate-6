@@ -1,5 +1,6 @@
 package com.example.repository;
 
+import com.example.entity.AppUser;
 import com.example.entity.Permission;
 import com.example.entity.Role;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,5 +96,23 @@ class RoleRepositoryIntegrationTest {
     void testFindByRoleIdIn() {
         Set<Role> found = roleRepository.findByRoleIdIn(Set.of(roleAdmin.getRoleId(), roleUser.getRoleId()));
         assertThat(found).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("Should find role by roleId with permissions and appUsers")
+    void testFindByRoleIdWithPermissionsAndAppUsers() {
+        Role attachedRole = entityManager.find(Role.class, roleAdmin.getRoleId());
+        AppUser user = new AppUser("test_repo_user@example.com", "Password@123", "Password@123", "First", "Last");
+        user.addRole(attachedRole);
+        entityManager.persist(user);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Optional<Role> found = roleRepository.findByRoleIdWithPermissionsAndAppUsers(roleAdmin.getRoleId());
+        assertTrue(found.isPresent());
+        assertEquals(adminRoleName, found.get().getRoleName());
+        assertThat(found.get().getPermissions()).hasSize(2);
+        assertThat(found.get().getAppUsers()).hasSize(1);
     }
 }

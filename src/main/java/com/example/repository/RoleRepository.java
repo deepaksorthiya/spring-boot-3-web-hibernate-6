@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.repository.query.Param;
+
 import java.util.Optional;
 import java.util.Set;
 
@@ -20,6 +22,10 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     @EntityGraph(attributePaths = {"permissions"})
     Optional<Role> findByRoleId(Long roleId);
+
+    @EntityGraph(attributePaths = {"permissions", "appUsers"})
+    @Query("SELECT r FROM Role r WHERE r.roleId = :roleId")
+    Optional<Role> findByRoleIdWithPermissionsAndAppUsers(@Param("roleId") Long roleId);
 
     Page<Role> findByPermissionsPermissionId(Long permissionId, Pageable pageable);
 

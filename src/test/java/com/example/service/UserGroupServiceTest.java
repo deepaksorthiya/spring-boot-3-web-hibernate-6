@@ -97,11 +97,11 @@ class UserGroupServiceTest {
     @Test
     @DisplayName("Should delete group by ID")
     void testDeleteGroup() {
-        doNothing().when(groupRepository).deleteById(1L);
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(sampleGroup));
 
         groupService.deleteGroup(1L);
 
-        verify(groupRepository, times(1)).deleteById(1L);
+        verify(groupRepository, times(1)).delete(sampleGroup);
     }
 
     @Test
