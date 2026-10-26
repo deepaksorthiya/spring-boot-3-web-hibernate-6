@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/v1/groups")
+@RequestMapping("${api.v1.groups.prefix}")
 public class UserGroupController {
 
     private final UserGroupService groupService;

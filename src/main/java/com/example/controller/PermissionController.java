@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,28 +21,28 @@ public class PermissionController {
         this.permissionService = permissionService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<Permission> createPermission(@RequestBody @Validated Permission permission) {
         return new ResponseEntity<>(permissionService.createPermission(permission), HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "{permissionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping("/{permissionId}")
     public ResponseEntity<Void> deleteByPermissionId(@PathVariable Long permissionId) {
         permissionService.deleteByPermissionId(permissionId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value = "{permissionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/{permissionId}")
     public ResponseEntity<Permission> findByPermissionId(@PathVariable Long permissionId) {
         return new ResponseEntity<>(permissionService.findByPermissionId(permissionId), HttpStatus.OK);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<Page<Permission>> findAllPermissions(@NotNull final Pageable pageable) {
         return new ResponseEntity<>(permissionService.findAllPermissions(pageable), HttpStatus.OK);
     }
 
-    @GetMapping(value = "{permissionId}/roles", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/{permissionId}/roles")
     public ResponseEntity<Page<Role>> getAllRolesByPermissionId(@PathVariable Long permissionId, @NotNull final Pageable pageable) {
         return new ResponseEntity<>(permissionService.getAllRolesByPermissionId(permissionId, pageable), HttpStatus.OK);
     }
