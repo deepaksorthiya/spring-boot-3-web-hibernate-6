@@ -5,13 +5,14 @@
 
 version: 2
 updates:
-  # Enable version updates for MAVEN
+  # Enable version updates for maven
   - package-ecosystem: "maven" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
       time: "23:59"
       timezone: "Asia/Calcutta"
+    open-pull-requests-limit: 50
   # Enable version updates for Github Action
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -19,3 +20,20 @@ updates:
       interval: "daily"
       time: "23:59"
       timezone: "Asia/Calcutta"
+    open-pull-requests-limit: 50
+  # Enable version updates for docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "23:59"
+      timezone: "Asia/Calcutta"
+    open-pull-requests-limit: 50
+  # Enable version updates for docker-compose
+  - package-ecosystem: "docker-compose"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "23:59"
+      timezone: "Asia/Calcutta"
+    open-pull-requests-limit: 50

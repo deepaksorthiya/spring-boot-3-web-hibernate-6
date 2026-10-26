@@ -1,0 +1,57 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: JVM Maven Build
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - "README.md"
+      - ".gitignore"
+      - "docs/**"
+      - "images/**"
+      - "k8s/**"
+      - "docker-compose.yml"
+      - "docker/**"
+      - ".dockerignore"
+      - ".gitattributes"
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: JVM Maven Build
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          java-version: "25"
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Set Execution Permission
+        run: |
+          chmod +x mvnw
+
+      - name: Check JVM Maven Versions
+        run: |
+          echo "JAVA_HOME: $JAVA_HOME"
+          java --version
+          mvn -v
+          ./mvnw -v
+
+      - name: Clean Build Test In Non-Native Mode with JDK and Maven
+        run: |
+          ./mvnw clean package --file pom.xml --batch-mode --update-snapshots

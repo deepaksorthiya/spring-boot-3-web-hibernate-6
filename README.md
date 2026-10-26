@@ -1,4 +1,4 @@
-[![Java Maven Build Test](https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6/actions/workflows/maven-build.yml/badge.svg)](https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6/actions/workflows/maven-build.yml)
+[![Java Maven Build Test](https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6/actions/workflows/maven-jvm-non-native-build.yml/badge.svg)](https://github.com/deepaksorthiya/spring-boot-3-web-hibernate-6/actions/workflows/maven-build.yml)
 [![Docker Hub badge][dockerhub-badge]][dockerhub]
 
 [dockerhub-badge]: https://img.shields.io/docker/pulls/deepaksorthiya/spring-boot-3-web-hibernate-6
