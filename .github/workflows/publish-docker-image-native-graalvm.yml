@@ -40,6 +40,8 @@ jobs:
           echo "JAVA_HOME: $JAVA_HOME"
           java --version
           native-image --version
+          mvn -v
+          ./mvnw -v
 
       - name: Create Native Container Image with GraalVM and Maven
         run: chmod +x mvnw && ./mvnw clean -Pnative spring-boot:build-image -DskipTests --file pom.xml --batch-mode --update-snapshots
