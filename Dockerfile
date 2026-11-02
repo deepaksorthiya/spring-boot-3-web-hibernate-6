@@ -1,12 +1,12 @@
 # Stage 1: Build Stage
-FROM bellsoft/liberica-runtime-container:jdk-25-stream-musl AS builder
+FROM bellsoft/liberica-runtime-container:jdk-26-stream-musl AS builder
 WORKDIR /ws-builder
 ADD . .
 RUN chmod +x mvnw && ./mvnw -DskipTests -Dmaven.gitcommitid.skip=true -Pnative clean package
 
 # Stage 2: Layer Tool Stage
 # Perform the extraction in a separate builder container
-FROM bellsoft/liberica-runtime-container:jdk-25-cds-slim-musl AS optimizer
+FROM bellsoft/liberica-runtime-container:jdk-26-cds-slim-musl AS optimizer
 WORKDIR /ws-optimizer
 # This points to the built jar file in the target folder
 # Adjust this to 'build/libs/*.jar' if you're using Gradle
@@ -16,7 +16,7 @@ COPY --from=builder /ws-builder/target/*.jar application.jar
 RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
 # Stage 3: Final Stage
 # This is the runtime container
-FROM bellsoft/liberica-runtime-container:jre-25-stream-musl
+FROM bellsoft/liberica-runtime-container:jre-26-stream-musl
 WORKDIR /application
 # Copy the extracted jar contents from the builder container into the working directory in the runtime container
 # Every copy step creates a new docker layer
