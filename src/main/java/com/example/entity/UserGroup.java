@@ -56,6 +56,6 @@ public class UserGroup {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(userGroupId);
+        return getClass().hashCode();
     }
 }

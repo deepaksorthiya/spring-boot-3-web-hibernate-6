@@ -103,6 +103,6 @@ public class AppUser {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(userId);
+        return getClass().hashCode();
     }
 }

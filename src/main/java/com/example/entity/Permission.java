@@ -47,6 +47,6 @@ public class Permission {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(permissionId);
+        return getClass().hashCode();
     }
 }

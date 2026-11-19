@@ -80,6 +80,6 @@ public class Role {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(roleId);
+        return getClass().hashCode();
     }
 }
