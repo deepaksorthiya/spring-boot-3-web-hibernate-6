@@ -5,6 +5,7 @@ import com.example.entity.AppUser;
 import com.example.entity.UserGroup;
 import com.example.global.exceptions.ResourceNotFoundException;
 import com.example.global.exceptions.UserControllerAdviceHandler;
+import com.example.mapper.DtoMapper;
 import com.example.service.UserGroupService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -127,7 +128,7 @@ class UserGroupControllerTest {
     void testGetGroupUsers() throws Exception {
         AppUser user = new AppUser("user@test.com", "Pass@1234", "Pass@1234", "A", "B");
         user.setUserId(2L);
-        when(groupService.getGroupUsers(1L)).thenReturn(Set.of(user));
+        when(groupService.getGroupUsers(1L)).thenReturn(Set.of(DtoMapper.toUserResponse(user)));
 
         mockMvc.perform(get("/api/v1/groups/{id}/users", 1L))
                 .andExpect(status().isOk())

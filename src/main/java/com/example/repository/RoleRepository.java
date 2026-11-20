@@ -1,11 +1,13 @@
 package com.example.repository;
 
 import com.example.entity.Role;
+import org.hibernate.jpa.AvailableHints;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.repository.query.Param;
@@ -29,5 +31,8 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     Page<Role> findByPermissionsPermissionId(Long permissionId, Pageable pageable);
 
+    @QueryHints({
+            @jakarta.persistence.QueryHint(name = AvailableHints.HINT_READ_ONLY, value = "true")
+    })
     Set<Role> findByRoleIdIn(Set<Long> roleIds);
 }

@@ -1,11 +1,13 @@
 package com.example.repository;
 
 import com.example.entity.AppUser;
+import org.hibernate.jpa.AvailableHints;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -42,6 +44,9 @@ public interface UserRepository extends JpaRepository<AppUser, Long>, CustomUser
     Optional<AppUser> findByUserId(Long userId);
 
     @Query(GET_SINGLE_USER_WITH_ROLE)
+    @QueryHints({
+            @jakarta.persistence.QueryHint(name = AvailableHints.HINT_READ_ONLY, value = "true")
+    })
     Optional<AppUser> getUserWithRoles(@Param("userId") Long userId);
 
     Page<AppUser> findByRolesRoleId(Long roleId, Pageable pageable);

@@ -1,7 +1,9 @@
 package com.example.service;
 
+import com.example.dto.AppUserDto;
 import com.example.entity.AppUser;
 import com.example.entity.UserGroup;
+import com.example.mapper.DtoMapper;
 import com.example.repository.UserGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -108,18 +110,19 @@ class UserGroupServiceTest {
     @DisplayName("Should return group users when group exists")
     void testGetGroupUsers_Success() {
         AppUser user = new AppUser("test@test.com", "Pass@1234", "Pass@1234", "A", "B");
+        user.setUserId(1L);
         sampleGroup.getAppUsers().add(user);
-        when(groupRepository.findByIdWithUsers(1L)).thenReturn(Optional.of(sampleGroup));
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(sampleGroup));
 
-        Set<AppUser> users = groupService.getGroupUsers(1L);
+        Set<AppUserDto> users = groupService.getGroupUsers(1L);
 
-        assertThat(users).contains(user);
+        assertThat(users).contains(DtoMapper.toUserResponse(user));
     }
 
     @Test
     @DisplayName("Should throw RuntimeException when group users not found")
     void testGetGroupUsers_NotFound() {
-        when(groupRepository.findByIdWithUsers(99L)).thenReturn(Optional.empty());
+        when(groupRepository.findById(99L)).thenReturn(Optional.empty());
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> groupService.getGroupUsers(99L));
         assertEquals("Group not found", ex.getMessage());

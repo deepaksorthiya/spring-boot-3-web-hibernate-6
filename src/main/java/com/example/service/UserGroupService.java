@@ -1,8 +1,9 @@
 package com.example.service;
 
-import com.example.entity.AppUser;
+import com.example.dto.AppUserDto;
 import com.example.entity.UserGroup;
 import com.example.global.exceptions.ResourceNotFoundException;
+import com.example.mapper.DtoMapper;
 import com.example.repository.UserGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserGroupService {
@@ -56,9 +58,9 @@ public class UserGroupService {
     }
 
     @Transactional(readOnly = true)
-    public Set<AppUser> getGroupUsers(Long groupId) {
-        UserGroup group = groupRepository.findByIdWithUsers(groupId)
+    public Set<AppUserDto> getGroupUsers(Long groupId) {
+        UserGroup group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Group not found"));
-        return group.getAppUsers();
+        return group.getAppUsers().stream().map(DtoMapper::toUserResponse).collect(Collectors.toSet());
     }
 }

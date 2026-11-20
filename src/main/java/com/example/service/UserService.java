@@ -12,11 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -100,12 +96,18 @@ public class UserService {
         if (!newRoleIds.isEmpty()) {
             // Incoming Role objects from the request payload are detached/unmanaged POJOs.
             // Querying findByRoleIdIn validates that the roles exist in the database and loads
-            // fully managed Role entity instances into the current Hibernate session.
+            // fully managed Role entity instances into the current Hibernate session
+            // (one IN query; the response needs the role data, so proxies via getReferenceById
+            // would only defer the load to serialization, outside the transaction).
             Set<Role> rolesToAssign = roleRepository.findByRoleIdIn(newRoleIds);
-            for (Role role : rolesToAssign) {
-                // Use helper method to maintain bidirectional relationship on both sides
-                appUser.addRole(role);
-            }
+
+            // PERFORMANCE: update the OWNING side only (AppUser.roles defines the @JoinTable).
+            // Do NOT use appUser.addRole(role) here: it also calls role.getAppUsers().add(user), and
+            // Role.appUsers is a lazy inverse (mappedBy) collection, so that add() forces Hibernate to
+            // initialize it, loading EVERY user holding that role, once per role assigned, just to
+            // update an in-memory view that is never persisted and never read in this transaction.
+            // Hibernate writes the join-table rows (batched) from the owning side alone.
+            appUser.getRoles().addAll(rolesToAssign);
         }
         return appUser;
     }
@@ -129,16 +131,15 @@ public class UserService {
         if (!roleIdsToRemove.isEmpty()) {
             // Note: No DB query (roleRepository.findByRoleIdIn) is needed here!
             // All assigned roles are already loaded and managed in memory on appUser.getRoles()
-            // by getUserWithRoles(userId). We simply filter those in-memory managed instances.
-            Set<Role> toRemove = appUser.getRoles().stream()
-                    .filter(r -> roleIdsToRemove.contains(r.getRoleId()))
-                    .collect(Collectors.toSet());
+            // by getUserWithRoles(userId), so we filter those in-memory managed instances.
 
-            for (Role role : toRemove) {
-                // Use helper method to disassociate both sides; Hibernate automatically
-                // deletes the corresponding join-table rows (app_users_roles_mapping)
-                appUser.removeRole(role);
-            }
+            // PERFORMANCE: update the OWNING side only (AppUser.roles defines the @JoinTable).
+            // Do NOT use appUser.removeRole(role) here: it also calls role.getAppUsers().remove(user),
+            // and Role.appUsers is a lazy inverse (mappedBy) collection, so that remove() forces Hibernate
+            // to initialize it, loading EVERY user holding that role, once per role removed, just to
+            // update an in-memory view that is never persisted and never read in this transaction.
+            // Hibernate deletes the matching app_users_roles_mapping rows from the owning side alone.
+            appUser.getRoles().removeIf(role -> roleIdsToRemove.contains(role.getRoleId()));
         }
         return appUser;
     }

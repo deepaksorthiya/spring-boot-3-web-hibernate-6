@@ -244,7 +244,9 @@ class UserServiceTest {
         AppUser updated = userService.removeRolesFromUser(1L, Set.of(sampleRole));
 
         assertThat(updated.getRoles()).doesNotContain(sampleRole);
-        assertThat(sampleRole.getAppUsers()).doesNotContain(sampleUser);
+        // Only the owning side (AppUser.roles) is updated on purpose: touching the lazy inverse
+        // Role.appUsers would force Hibernate to load every user holding that role.
+        assertThat(sampleRole.getAppUsers()).contains(sampleUser);
         verify(roleRepository, never()).findByRoleIdIn(any());
     }
 

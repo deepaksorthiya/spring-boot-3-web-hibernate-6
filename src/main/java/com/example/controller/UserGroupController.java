@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.entity.AppUser;
+import com.example.dto.AppUserDto;
 import com.example.entity.UserGroup;
 import com.example.global.exceptions.ResourceNotFoundException;
 import com.example.service.UserGroupService;
@@ -50,8 +50,8 @@ public class UserGroupController {
     }
 
     @GetMapping("/{id}/users")
-    public ResponseEntity<Set<AppUser>> getGroupUsers(@PathVariable Long id) {
-        Set<AppUser> users = groupService.getGroupUsers(id);
+    public ResponseEntity<Set<AppUserDto>> getGroupUsers(@PathVariable Long id) {
+        Set<AppUserDto> users = groupService.getGroupUsers(id);
         return ResponseEntity.ok(users);
     }
 
